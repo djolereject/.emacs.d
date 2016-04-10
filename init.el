@@ -14,5 +14,6 @@
 (load "global.el")
 (load "custom_hooks.el")
 (load "rails.el")
+(load "rails_hooks.el")
 (load "front_end.el")
 

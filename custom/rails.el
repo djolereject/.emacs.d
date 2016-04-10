@@ -6,8 +6,15 @@
 (add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 
+
+;;
+(if (not (getenv "TERM_PROGRAM"))
+    (setenv "PATH"
+            (shell-command-to-string "source $HOME/.zshrc && printf $PATH")))
+
 (require 'ruby-mode)
 (require 'inf-ruby)
+(add-hook 'ruby-mode-hook 'robe-mode)
 
 ;; When folding, take these delimiters into consideration
 (add-to-list 'hs-special-modes-alist
@@ -26,6 +33,8 @@
 (require 'projectile)
 (projectile-global-mode)
 (setq projectile-completion-system 'grizzl)
+;; Start projectile-rails
+(add-hook 'projectile-mode-hook 'projectile-rails-on)
 
 ;; Prevent emacs from adding the encoding line at the top of the file
 (setq ruby-insert-encoding-magic-comment nil)
@@ -42,8 +51,7 @@
 ;; Support for YARD
 (require 'yard-mode)
 (add-hook 'ruby-mode-hook 'yard-mode)
-;; Support for running rspec tests
-(require 'rspec-mode)
+
 
 ;; Turn on eldoc in ruby files to display info about the
 ;; method or variable at point
@@ -57,5 +65,3 @@
             (hs-minor-mode 1) ;; Enables folding
             (modify-syntax-entry ?: "."))) ;; Adds ":" to the word definition
 
-;; Start projectile-rails
-(add-hook 'projectile-mode-hook 'projectile-rails-on)

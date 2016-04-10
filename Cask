@@ -4,7 +4,11 @@
 (source melpa-stable)
 (source org)
 
-(depends-on "ag")
+
+(depends-on "robe")
+(depends-on "xkcd")
+(depends-on "helm")
+(depends-on "grizzl")
 (depends-on "cask")
 (depends-on "coffee-mode")
 (depends-on "flx-ido")

@@ -4,3 +4,8 @@ init.el
 projectile-bookmarks.eld
 projectile.cache
 auto-save-list
+bookmarks
+ido.last*
+rake*
+recentf
+xkcd
