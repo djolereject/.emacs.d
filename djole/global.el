@@ -23,6 +23,11 @@
 (global-set-key (kbd "s-q") nil)
 (global-set-key (kbd "s-w") nil)
 
+;; snap to height of screen
 (setq frame-resize-pixelwise t)
+
+;; use pandoc as markdown's external converter
+(setq markdown-command "pandoc")
+
 
 (provide 'global)
