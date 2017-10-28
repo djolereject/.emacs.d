@@ -4,8 +4,9 @@
 
 (if window-system
     (add-hook 'after-init-hook
-	      (load-theme 'kaolin-dark)))
+	      (load-theme 'material)))
 
+;; kaolin-dark
 ;; ample
 ;; base16-solarflare
 ;; base16-materia
