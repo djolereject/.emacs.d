@@ -28,8 +28,7 @@
 ;; Rspec gets into editing mode on pry
 (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
 
-;; Prevent emacs from adding the encoding line at the top of the file
-(setq ruby-insert-encoding-magic-comment nil)
-
+;; move cursor by camelCase
+(add-hook 'ruby-mode-hook 'subword-mode 1)
 
 (provide 'programming)
