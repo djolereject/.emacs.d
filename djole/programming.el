@@ -5,6 +5,7 @@
 (require 'ruby-tools)
 (require 'yard-mode)
 
+
 ;; Files with the following extensions should open in ruby-mode
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
@@ -12,7 +13,6 @@
 (add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-
 
 (add-hook 'ruby-mode-hook 'yard-mode)
 (add-hook 'ruby-mode-hook 'robe-mode)
@@ -25,10 +25,18 @@
 (setq compilation-scroll-output 'first-error)
 ;; Automatic save
 (setq compilation-ask-about-save nil)
+
 ;; Rspec gets into editing mode on pry
 (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
 
 ;; move cursor by camelCase
 (add-hook 'ruby-mode-hook 'subword-mode 1)
+
+;; auto-indent
+(add-hook 'prog-mode-hook 'auto-indent-mode)
+
+;; disable mouse
+(add-hook 'prog-mode-hook 'disable-mouse-mode)
+
 
 (provide 'programming)

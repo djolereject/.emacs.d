@@ -5,9 +5,11 @@
 (source org)
 
 (depends-on "ace-window")
+(depends-on "auto-indent-mode")
 (depends-on "base16-theme")
 (depends-on "cask")
 (depends-on "color-theme")
+(depends-on "disable-mouse")
 (depends-on "edit-indirect")
 (depends-on "flx-ido")
 (depends-on "flymake-ruby")
