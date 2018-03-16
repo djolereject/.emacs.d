@@ -185,8 +185,8 @@ For now, it's `github` theme from `base16`. This will change often if history is
 ;; close candidates: 'base16-mexico-light 'base16-atelier-cave-light
 #+END_SRC
 
-** org  
-*** general layout
+** org
+*** General Layout
 
 Setup `org-mode` with common sense layout.
 
@@ -219,25 +219,35 @@ Emphasized text is immediately displayed *(Bold*, /italic/)
 #+BEGIN_SRC emacs-lisp
 (setq org-hide-emphasis-markers t)
 #+END_SRC
+*** Customize Bindings
+I have some preferences when it comes to binding keys in `org-mode`...
 
-*** `org-bullets`
+Promoting and demoting sections shouldn't be done with Meta, it's not that common operation for me and can be destructive if unnoticed.
+Shortcut for promoting and demoting is S-up/down, while M-right/left is reverted to it's native behavior.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook          
+          '(lambda ()
+             (define-key org-mode-map (kbd "M-<right>") 'forward-word)
+             (define-key org-mode-map (kbd "M-<left>") 'backward-word)
+             (define-key org-mode-map (kbd "s-<down>") 'org-do-demote)
+             (define-key org-mode-map (kbd "s-<up>") 'org-do-promote)))
+#+END_SRC
+
+*** Install Bullets
 Goal of `org-bullets` is simple - replace asterisk with nice looking bullets.
 
-At the moment of writing this, `org-bullets` is having problems while installing from melpa stable and create warning about local variable `e`. First line is for suppressing this warning.
-
 #+BEGIN_SRC emacs-lisp
-(defvar e nil)
 (use-package org-bullets
   :ensure t
   :init
   (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 
-* Programming
-
+*** Install Exporters
 #+BEGIN_SRC emacs-lisp
-(setq org-src-tab-acts-natively t)
+
 #+END_SRC
+* Programming
 
 That's it
 
