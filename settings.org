@@ -78,13 +78,14 @@ Shortcut for opening settings.org is `C-c i`
   (global-set-key (kbd "C-c i") 'find-init)
 #+END_SRC
 
-* Packages
+* Basic Packages
 ** Sources
 
 Packages are pulled from melpa, be very conservative about adding other repos. Having only one repo keeps things simple and neat, and I mostly don't need fancy, rare or bleeding edge packages.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
+; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 #+END_SRC
@@ -129,18 +130,22 @@ Make subdirectories in user's emacs directory, and save all tmp files there.
 
 #+END_SRC
 
-* Customization
-** org
- 
-#+BEGIN_SRC emacs-lisp
+* Customization Packages
+** org  
+*** `org-bullets`
+    #+BEGIN_SRC emacs-lisp
+  ;; remove compile warning for local variable `e`
+  ;; 
+  (defvar e nil)
+
+  ;; install package and hook it to org-mode
+  ;; 
   (use-package org-bullets
-    :commands org-bullets-mode
+    :ensure t
     :init
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-#+END_SRC
-
-   
+    (add-hook 'org-mode-hook 'org-bullets-mode))
+    #+END_SRC
+    
 * Programming
 
 #+BEGIN_SRC emacs-lisp
