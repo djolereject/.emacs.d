@@ -55,14 +55,23 @@ Packages are pulled from melpa stable, be conservative about adding other repos.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
+#+END_SRC
+
+** TLS Setup
+
+First of all, it's essential to setup TLS certificate, because Emacs is not handling that as it should. We can't use `use-package` for that because it's managed before *ANY* installation, including `use-package`.
+For openssl to work, on OSX we need to install `libressl`, which is easiest to do via Homebrew: `brew install libressl`.
+
+#+BEGIN_SRC emacs-lisp
+(require 'gnutls)
+(add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
 #+END_SRC
 
 ** Install `use-package`
 
-If `use-package` is not installed, get on with it, it's vastly superior way of installing packages.
+If `use-package` is not installed, get on with it, it's vastly superior way of installing packages compared to any other technique of keeping your setup up to date (and I tried them all).
 
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -112,69 +121,85 @@ Some packages are sending unnecessary warnings and it's bothering me so this is 
 
 * Basic Layout
 
-Just some common sense stuff, along with maximized screen for standalone app. 
+Just some common sense stuff.
 
+** Set general defaults
 
+Maximize Emacs
 #+BEGIN_SRC emacs-lisp
-;; set cursor
-(setq-default cursor-type 'bar)
-
-;; remove welcome screen
-(setq inhibit-startup-message t)
-
-;; remove toolbar
-(tool-bar-mode 0)
-
-;; remove scroll bars
-(scroll-bar-mode 0)
-
-;; maximize emacs
 (custom-set-variables
  '(initial-frame-alist (quote ((fullscreen . maximized)))))
-
-;; show y/n instead of yes/no
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; stop system beep
-(setq ring-bell-function (lambda () (message "*beep*")))
-
-;; remove splash screen
-(setq inhibit-splash-screen t)
-
-;; remove text in scratch buffer
-(setq initial-scratch-message nil)
-
-;; start with text-mode if no other mode is default
-(setq initial-major-mode 'text-mode)
-
-;; no gui tooltips
-(setq tooltip-use-echo-area t)
-
-;; linum mode just for programming
-(add-hook 'prog-mode-hook 'linum-mode)
-
-;; number mode always
-(column-number-mode t)
-
-;; C-l should start from top, not middle
-(setq recenter-positions '(top middle bottom))
-
-;; don't expect double space for end of sentence
-(setq sentence-end-double-space nil)
-
-;; move through camel case
-(subword-mode)
-
-
 #+END_SRC
 
-* Customize Packages
+Cursor is "bar" by default (other options include: box, hollow, hbar, nil)
+#+BEGIN_SRC emacs-lisp
+(setq-default cursor-type 'bar)
+#+END_SRC
 
-This is the place for installing and customizing general-purpose packages.
+Start with text-mode if no other mode is default for file I'm opening
+#+BEGIN_SRC emacs-lisp
+(setq initial-major-mode 'text-mode)
+#+END_SRC
+
+** Remove unnecessary things
+
+Turn off decorations
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+#+END_SRC
+
+Remove messages and screens suitable for beginners
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+#+END_SRC
+
+Show y/n instead of yes/no
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+I never need GUI tooltips in Emacs
+#+BEGIN_SRC emacs-lisp
+(setq tooltip-use-echo-area t)
+#+END_SRC
+
+Beep is irritating, send it to message screen instead of speakers
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function (lambda () (message "*beep*")))
+#+END_SRC
+
+** Customize rows and columns
+
+Show current cursor position in footer
+#+BEGIN_SRC emacs-lisp
+(setq recenter-positions '(top middle bottom))
+#+END_SRC
+
+I prefer first C-l moving to top instead of middle of screen
+#+BEGIN_SRC emacs-lisp
+(setq column-number-mode t)
+#+END_SRC
+
+Wrap lines in any mode
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode 1)
+#+END_SRC
+
+Don't expect double space for end of sentence
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
+
+* Customize Main Packages
+
+Installing and customizing all packages for my setup.
 
 ** theme
 
-For now, it's `github` theme from `base16`. This will change often if history is any indicator. `github` is clean and I need a change from dark themes.
+For now, it's `github` theme from `base16`. This will change often if history is any indicator. `github` is clean and I needed a change from dark themes.
 [[https://belak.github.io/base16-emacs/][Available themes in base16]]
 
 #+BEGIN_SRC emacs-lisp
@@ -189,6 +214,7 @@ For now, it's `github` theme from `base16`. This will change often if history is
 *** General Layout
 
 Setup `org-mode` with common sense layout.
+
 
 I want everything indented to the level of it's title.
 #+BEGIN_SRC emacs-lisp
@@ -219,6 +245,7 @@ Emphasized text is immediately displayed *(Bold*, /italic/)
 #+BEGIN_SRC emacs-lisp
 (setq org-hide-emphasis-markers t)
 #+END_SRC
+
 *** Customize Bindings
 I have some preferences when it comes to binding keys in `org-mode`...
 
@@ -244,11 +271,38 @@ Goal of `org-bullets` is simple - replace asterisk with nice looking bullets.
 #+END_SRC
 
 *** Install Exporters
-#+BEGIN_SRC emacs-lisp
 
+Skip for now, because `ox-pandoc` is not essential at this point and current version on melpa-stable has issues. Similar thing goes for `org-reveal`, which I don't have use these days so I'll wait until I need creating presentation to set it up.
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package ox-pandoc
+  :ensure t)
+#+END_SRC
+
+I will get to installing `org-reveal` sometimes, but for now I don't have much need for presentations so it can wait.
+
+* Add Non-Essential Packages
+** Touch typing
+
+Spare minutes are best spent on practicing some touch typing. Let's add few packages that can help with that.
+
+`speed-type` takes practicing examples on random and it's sometimes very demanding with rare words.
+#+BEGIN_SRC emacs-lisp
+(use-package speed-type :ensure t)
+#+END_SRC
+
+`typit` is convenient for building speed on common words.
+#+BEGIN_SRC emacs-lisp
+(use-package typit :ensure t)
 #+END_SRC
 * Programming
 
-That's it
+Common setup for all programming modes
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'linum-mode)
+;; move through camel case
+(subword-mode)
+#+END_SRC
+
+
 
 
