@@ -46,9 +46,7 @@ Standard insert is done via `<s + TAB`, and I mostly need emacs-lisp. Now <el in
 #+END_SRC
 
 * Initial Setup
-
 Before we go on with customizing emacs it's essential to setup some prerequisites. Everything in this section is concerning setting up set-package and making sure we don't create clutter around with default settings.
-
 ** Sources
 
 Packages are pulled from melpa stable, be conservative about adding other repos. Having only one repo keeps things simple and neat, and I mostly don't need fancy, rare or bleeding edge packages.
@@ -120,79 +118,85 @@ Some packages are sending unnecessary warnings and it's bothering me so this is 
 #+END_SRC
 
 * Basic Layout
-
 Just some common sense stuff.
-
 ** Set general defaults
-
-Maximize Emacs
+*** Maximize Emacs
 #+BEGIN_SRC emacs-lisp
 (custom-set-variables
  '(initial-frame-alist (quote ((fullscreen . maximized)))))
 #+END_SRC
 
-Cursor is "bar" by default (other options include: box, hollow, hbar, nil)
+*** Cursor is "bar" by default (other options include: box, hollow, hbar, nil)
 #+BEGIN_SRC emacs-lisp
 (setq-default cursor-type 'bar)
 #+END_SRC
 
-Start with text-mode if no other mode is default for file I'm opening
+*** Start with text-mode if no other mode is default for file I'm opening
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'text-mode)
 #+END_SRC
-
 ** Remove unnecessary things
-
-Turn off decorations
+*** Turn off decorations
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 #+END_SRC
 
-Remove messages and screens suitable for beginners
+*** Remove messages and screens suitable for beginners
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-message t)
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 #+END_SRC
 
-Show y/n instead of yes/no
+*** Show y/n instead of yes/no
 #+BEGIN_SRC emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-I never need GUI tooltips in Emacs
+*** I never need GUI tooltips in Emacs
 #+BEGIN_SRC emacs-lisp
 (setq tooltip-use-echo-area t)
 #+END_SRC
 
-Beep is irritating, send it to message screen instead of speakers
+*** Beep is irritating, send it to message screen instead of speakers
 #+BEGIN_SRC emacs-lisp
 (setq ring-bell-function (lambda () (message "*beep*")))
 #+END_SRC
-
 ** Customize rows and columns
-
-Show current cursor position in footer
+*** Show current cursor position in footer
 #+BEGIN_SRC emacs-lisp
 (setq recenter-positions '(top middle bottom))
 #+END_SRC
 
-I prefer first C-l moving to top instead of middle of screen
+*** I prefer first C-l moving to top instead of middle of screen
 #+BEGIN_SRC emacs-lisp
 (setq column-number-mode t)
 #+END_SRC
 
-Wrap lines in any mode
+*** Wrap lines in any mode
 #+BEGIN_SRC emacs-lisp
 (global-visual-line-mode 1)
 #+END_SRC
 
-Don't expect double space for end of sentence
+*** Don't expect double space for end of sentence
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
 #+END_SRC
+** Stop unwanted behavior in OSX
+- Caps lock is bound to Control system-wide
+- Option is Meta by default
+- Left Cmd is Super by default
+- Right Cmd is Control
+- Killing and minimizing Emacs is supressed.
 
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'darwin)
+  (global-set-key (kbd "s-q") nil)
+  (global-set-key (kbd "s-w") nil)
+  (global-set-key (kbd "C-~") nil)
+  (setq mac-right-command-modifier 'control))
+#+END_SRC
 * Customize Main Packages
 
 Installing and customizing all packages for my setup.
@@ -210,8 +214,8 @@ For now, it's `github` theme from `base16`. This will change often if history is
 ;; close candidates: 'base16-mexico-light 'base16-atelier-cave-light
 #+END_SRC
 
-** org
-*** General Layout
+* Org Mode
+** General Layout
 
 Setup `org-mode` with common sense layout.
 
@@ -245,22 +249,23 @@ Emphasized text is immediately displayed *(Bold*, /italic/)
 #+BEGIN_SRC emacs-lisp
 (setq org-hide-emphasis-markers t)
 #+END_SRC
-
-*** Customize Bindings
+** Customize Bindings
 I have some preferences when it comes to binding keys in `org-mode`...
-
-Promoting and demoting sections shouldn't be done with Meta, it's not that common operation for me and can be destructive if unnoticed.
-Shortcut for promoting and demoting is S-up/down, while M-right/left is reverted to it's native behavior.
+- Promoting/Demoting with Super-left/righ
+- Moving subtree with Super-up/down
+- This leaves M-right/left to behave as in other modes
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook          
           '(lambda ()
              (define-key org-mode-map (kbd "M-<right>") 'forward-word)
              (define-key org-mode-map (kbd "M-<left>") 'backward-word)
-             (define-key org-mode-map (kbd "s-<down>") 'org-do-demote)
-             (define-key org-mode-map (kbd "s-<up>") 'org-do-promote)))
+             (define-key org-mode-map (kbd "s-<up>") 'org-move-subtree-up)
+             (define-key org-mode-map (kbd "s-<down>") 'org-move-subtree-down)
+             (define-key org-mode-map (kbd "s-<right>") 'org-do-demote)
+             (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)))
 #+END_SRC
 
-*** Install Bullets
+** Install Bullets
 Goal of `org-bullets` is simple - replace asterisk with nice looking bullets.
 
 #+BEGIN_SRC emacs-lisp
@@ -270,7 +275,7 @@ Goal of `org-bullets` is simple - replace asterisk with nice looking bullets.
   (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 
-*** Install Exporters
+** Install Exporters
 
 Skip for now, because `ox-pandoc` is not essential at this point and current version on melpa-stable has issues. Similar thing goes for `org-reveal`, which I don't have use these days so I'll wait until I need creating presentation to set it up.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -281,6 +286,17 @@ Skip for now, because `ox-pandoc` is not essential at this point and current ver
 I will get to installing `org-reveal` sometimes, but for now I don't have much need for presentations so it can wait.
 
 * Add Non-Essential Packages
+
+** Undo tree
+Make undo open 
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode:
+  :config (progn
+            (global-undo-tree-mode 1)
+            (bind-key "C-." 'undo-tree-visualize)))
+#+END_SRC
 ** Touch typing
 
 Spare minutes are best spent on practicing some touch typing. Let's add few packages that can help with that.
