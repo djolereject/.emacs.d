@@ -118,7 +118,7 @@ Some packages are sending unnecessary warnings and it's bothering me so this is 
 #+END_SRC
 
 * Basic Layout
-Just some common sense stuff.
+Setup some common sense behavior.
 ** Set general defaults
 *** Maximize Emacs
 #+BEGIN_SRC emacs-lisp
@@ -197,11 +197,7 @@ Just some common sense stuff.
   (global-set-key (kbd "C-~") nil)
   (setq mac-right-command-modifier 'control))
 #+END_SRC
-* Customize Main Packages
-
-Installing and customizing all packages for my setup.
-
-** theme
+* Setup Theme
 
 For now, it's `github` theme from `base16`. This will change often if history is any indicator. `github` is clean and I needed a change from dark themes.
 [[https://belak.github.io/base16-emacs/][Available themes in base16]]
@@ -216,40 +212,44 @@ For now, it's `github` theme from `base16`. This will change often if history is
 
 * Org Mode
 ** General Layout
-
-Setup `org-mode` with common sense layout.
-
-
-I want everything indented to the level of it's title.
+*** I want everything indented to the level of it's title.
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
 #+END_SRC
 
-Additional indentation for code is not needed
+*** Additional indentation for code is not needed
 #+BEGIN_SRC emacs-lisp
 (setq org-edit-src-content-indentation 0)
 #+END_SRC
 
-Code should be highlighted.
+*** Code should be highlighted.
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
 #+END_SRC
 
-Tabs should behave in expected way when in code block.
+*** Tabs should behave in expected way when in code block.
 #+BEGIN_SRC emacs-lisp
 (setq org-src-tab-acts-natively t)
 #+END_SRC
 
-Special symbols should be presented as intended (pi -> \pi{})
+*** Special symbols should be presented as intended (pi -> \pi{})
 #+BEGIN_SRC emacs-lisp
 (setq org-pretty-entities t)
 #+END_SRC
 
-Emphasized text is immediately displayed *(Bold*, /italic/)
+*** Emphasized text is immediately displayed *(Bold*, /italic/)
 #+BEGIN_SRC emacs-lisp
 (setq org-hide-emphasis-markers t)
 #+END_SRC
-** Customize Bindings
+
+*** Bullets instead of asterisks
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook 'org-bullets-mode))
+#+END_SRC
+** Bindings
 I have some preferences when it comes to binding keys in `org-mode`...
 - Promoting/Demoting with Super-left/righ
 - Moving subtree with Super-up/down
@@ -264,38 +264,72 @@ I have some preferences when it comes to binding keys in `org-mode`...
              (define-key org-mode-map (kbd "s-<right>") 'org-do-demote)
              (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)))
 #+END_SRC
-
-** Install Bullets
-Goal of `org-bullets` is simple - replace asterisk with nice looking bullets.
-
+* Git
+** Magit
+[[https://github.com/magit/magit][magit]] is complete "porcelan" for git with incomparable ease of use.
 #+BEGIN_SRC emacs-lisp
-(use-package org-bullets
+(use-package magit
   :ensure t
-  :init
-  (add-hook 'org-mode-hook 'org-bullets-mode))
+  :bind ("C-x g" . magit-status))
 #+END_SRC
 
-** Install Exporters
-
-Skip for now, because `ox-pandoc` is not essential at this point and current version on melpa-stable has issues. Similar thing goes for `org-reveal`, which I don't have use these days so I'll wait until I need creating presentation to set it up.
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package ox-pandoc
-  :ensure t)
+** Git Gutter
+[[https://github.com/syohex/emacs-git-gutter][git-gutter]] is displaying diff from last stage in left column (changed with "~", added with "+" and removed with "-").
+One of the selling points for it is that every chunk can be separately staged. Prefix for commands in `git-gutter` is `M-g`.
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter
+  :ensure t
+  :config (progn
+            (add-hook 'git-gutter:update-hooks 'magit-after-revert-hook)
+            (add-hook 'git-gutter:update-hooks 'magit-not-reverted-hook)
+            (global-git-gutter-mode +1)
+            (setq git-gutter:modified-sign "~")
+            (setq git-gutter:added-sign "+")
+            (setq git-gutter:deleted-sign "-")
+            (setq git-gutter:window-width 3)
+            (set-face-foreground 'git-gutter:modified "#b58900")
+            (set-face-foreground 'git-gutter:added "#859900")
+            (set-face-foreground 'git-gutter:deleted "#dc322f")
+            (global-set-key (kbd "M-g s") 'git-gutter:stage-hunk)
+            (global-set-key (kbd "M-g r") 'git-gutter:revert-hunk)
+            (global-set-key (kbd "M-g m") #'git-gutter:mark-hunk)
+            (global-set-key (kbd "M-g n") 'git-gutter:next-hunk)
+            (global-set-key (kbd "M-g p") 'git-gutter:previous-hunk)
+            ))
 #+END_SRC
-
-I will get to installing `org-reveal` sometimes, but for now I don't have much need for presentations so it can wait.
-
-* Add Non-Essential Packages
-
-** Undo tree
+** Git Time Machine
+[[https://github.com/pidu/git-timemachine][git-timemachine]] lets me to go through previous commits in given file. It's not used often, but when it's needed it makes reverting files easier.
+#+BEGIN_SRC emacs-lisp
+  (use-package git-timemachine :ensure t)
+#+END_SRC
+* Customize Editing
+** Undo Tree
 Make undo open 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode:
   :config (progn
-            (global-undo-tree-mode 1)
-            (bind-key "C-." 'undo-tree-visualize)))
+            (global-undo-tree-mode 1)))
+            ;(bind-key "C-." 'undo-tree-visualize)))
+#+END_SRC
+* Programming
+
+Common setup for all programming modes
+#+BEGIN_SRC emacs-lisp
+;;(add-hook 'prog-mode-hook 'linum-mode)
+;; move through camel case
+(subword-mode)
+#+END_SRC
+* Small side packages
+** Which key
+[[https://github.com/justbur/emacs-which-key][`which-key`]] opens popup after entering incomplete command. Delay of one second gives enough time to finish command without seeing it, and if I'm stuck it shows available endings to entered prefix.
+#+BEGIN_SRC emacs-lisp
+(use-package which-key 
+  :ensure t
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
 #+END_SRC
 ** Touch typing
 
@@ -309,14 +343,6 @@ Spare minutes are best spent on practicing some touch typing. Let's add few pack
 `typit` is convenient for building speed on common words.
 #+BEGIN_SRC emacs-lisp
 (use-package typit :ensure t)
-#+END_SRC
-* Programming
-
-Common setup for all programming modes
-#+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'linum-mode)
-;; move through camel case
-(subword-mode)
 #+END_SRC
 
 
