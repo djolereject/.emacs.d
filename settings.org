@@ -264,6 +264,8 @@ I have some preferences when it comes to binding keys in `org-mode`...
              (define-key org-mode-map (kbd "s-<right>") 'org-do-demote)
              (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)))
 #+END_SRC
+** Exporters
+I tried with `pandoc-mode` but it looks too intrusive, and `ox-pandoc` has some problems installing from melpa stable, so I will leave this section to be updated in some later time. These days I don't have much use in creating pdf's, so this can wait. 
 * Git
 ** Magit
 [[https://github.com/magit/magit][magit]] is complete "porcelan" for git with incomparable ease of use.
