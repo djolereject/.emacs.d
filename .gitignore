@@ -1,4 +1,4 @@
-config/*
-elpa/*
-data/*
-.#*
+*
+!README
+!init.el
+!settings.org

@@ -4,7 +4,7 @@
 #+PROPERTY: header-args :results silent :tangle (expand-file-name "settings.el" config-dir)
 
 * Intro
-Last Emacs bankruptcy forced me to try a different route - put everything in org file and have it documented, explained and never stale. This decision still looks decent, because I consulted README in first few days after installing packages, so I can only imagine that future will bring more of that need.
+Last Emacs bankruptcy forced me to try a different route - put everything in org file and have it documented, explained and never stale.
 
 This file (settings.org) is called from init.el by [[https://org-babel.readthedocs.io/en/latest/][Babel]] which represents [[https://orgmode.org/][Org-Mode]]'s capability to export, compile and execute code extracted from org files. All this setup is there to emulate old paradigm of [[https://github.com/limist/literate-programming-examples][Literate Programming]], which might have it's flaws but lisp config file should be exactly where it shines. I will try not to underestimate "Literate" part of this concept and give thorough explanations for every line of code along with overall principles for bigger sections.
 ** Files in .emacs.d
@@ -16,8 +16,6 @@ This is where the magic happens... Installations, setup and creation of values i
 In `init` we have to set some things beforehand so `settings` can run consistently between reboots and there is no clutter created in directory.
 - `(package-initialize)` is there just because `Custom` would put it there anyway being the starting file of config.
 - `config-dir` and `data-dir` are names of directories that we want for variables and they are explained in more detail in `no-littering` package explanation. When I included this package, it became obvious that some other transient files should have their place in those directories so I pulled their creation from `no-littering` and put it in preprocessing stage.
-*** reset.sh
-This is just a small script that I use to clean everything from this directory except initial files. I use it for shorthand to recreate starting structure of `.emacs.d` when I want to try out different installations. It's made to work with any *nix system, being that it's based on POSIX, but I didn't test that statement vigorously. After directory is put under version control, this file doesn't make any sense, but I keep it just in case.
 *** README
 Just a link to `settings.org`
 * Prerequisites
@@ -95,6 +93,56 @@ I'm often opening various files from Finder with Emacs, and in most cases `text-
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'text-mode)
 #+END_SRC
+*** Minibuffer
+[[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy]] is improved version of `ido-mode` with much more customization options. It removes need for `ubiquitous` and `smex` and have good overall feel.
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :ensure t)
+(use-package swiper
+  :ensure t
+  :diminish ivy-mode
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)
+         ("C-c C-r" . ivy-resume)
+         ("C-c h m" . woman)
+         ("C-x b" . ivy-switch-buffer)
+         ("C-c u" . swiper-all))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t))
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("C-h f" . counsel-describe-function)
+         ("C-h v" . counsel-describe-variable)
+         ("C-h i" . counsel-info-lookup-symbol)
+         ("C-h u" . counsel-unicode-char)
+         ("C-c k" . counsel-rg)
+         ("C-x l" . counsel-locate)
+         ("C-c g" . counsel-git-grep)
+         ("C-c h i" . counsel-imenu)
+         ("C-x p" . counsel-list-processes))
+  :config
+  (ivy-set-actions
+           'counsel-find-file
+           '(("j" find-file-other-window "other")))
+  (ivy-set-actions 'counsel-git-grep
+                   '(("j" find-file-other-window "other"))))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package ivy
+  :ensure t
+  :config (progn 
+            (ivy-mode 1)
+            (setq ivy-use-virtual-buffers t)
+            (setq ivy-count-format "(%d/%d) ")))
+#+END_SRC
+*** Reverting buffers
+When file changes from some outside source (say, git reset), I expect buffer to render that change immediately.
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode t)
+#+END_SRC
 ** Remove unnecessary things
 *** Decorations
 If you use your Emacs without mouse, toolbar and scrollbar are just wastes of screen space.
@@ -141,7 +189,7 @@ Only scenario where you want text not to be wrapped is when looking source of so
 (global-visual-line-mode 1)
 #+END_SRC
 *** Double space sentences
-Let's ignore American typist's convention however much it be helpful in deducing end of the sentence. We will have tools for that in any place we need it.
+Let's ignore American typist's convention however much it be helpful in deducing end of the sentence. If you want it somewhere, just use `M-x repunctuate-sentences`.
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
 #+END_SRC
@@ -162,12 +210,14 @@ Interesting and superior way of dealing with undo in Emacs. Takes some time to g
 (use-package undo-tree
   :ensure t
   :init (global-undo-tree-mode))
-
-;; (use-package undo-tree
-;;   :ensure t
-;;   :diminish undo-tree-mode:
-;;   :config (progn
-;;             (global-undo-tree-mode 1)))
+#+END_SRC
+*** Whitespaces
+When there are more than one whitespace in row, it's common to want them all replaced by just one. If there is just one whitespace, we might want that one gone too.
+It's really simple package, but I find it incredibly useful. Shortcut is `M-Space`.
+#+BEGIN_SRC emacs-lisp
+(use-package shrink-whitespace
+  :ensure t
+  :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
 #+END_SRC
 ** OS-specific
 For now, I only customized things related to OSX, because that's the system I'm spending most of my time. I plan to take some time these days to do fine tuning on few popular distros.
@@ -230,6 +280,11 @@ Add colors to code using native mode for given language.
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
 #+END_SRC
+*** Code confirmation
+I never accidentaly type C-c C-c, so there is no need for confirmation
+#+BEGIN_SRC emacs-lisp
+(setq org-confirm-babel-evaluate nil)
+#+END_SRC
 *** Code tabs
 Tabs should behave in expected way when in code block, default is quite confusing.
 #+BEGIN_SRC emacs-lisp
@@ -250,7 +305,7 @@ Symbols should be presented as intended (pi -> \pi{})
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :ensure t
-  :init
+  :config
   (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 ** Bindings
@@ -277,6 +332,36 @@ Standard insert is done via `<s + TAB`, and I mostly need emacs-lisp, so I made 
 #+END_SRC
 *** Exporters
 I tried with `pandoc-mode` but it looks too intrusive, and `ox-pandoc` has some problems installing from melpa stable, so I will leave this section to be updated in some later time. These days I don't have much use in creating pdf's or latex, so this can wait.
+** Appearance
+#+BEGIN_SRC emacs-lisp :tangle no
+(let*
+      ((variable-tuple (cond
+                        ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                        ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                        ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                        ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                        (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+       (base-font-color     (face-foreground 'default nil 'default))
+       (headline           `(:inherit default :weight normal :foreground ,base-font-color)))
+
+    (custom-theme-set-faces 'user
+                            `(org-level-8 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-7 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-6 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-5 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-4 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.33))))
+                            `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.33))))
+                            `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.33))))
+                            `(org-document-title ((t (,@headline ,@variable-tuple :height 1.33 :underline nil))))))
+#+END_SRC
+** Exporters
+Needs more thinking about what I really need.
+#+BEGIN_SRC emacs-lisp
+(use-package ox-gfm
+  :after (org)
+  :ensure t)
+#+END_SRC
 * Git
 Version controll is important part of the Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene, showing factual difference between "porcelain" and "plumbing". After some time of adjusting practices, raising every day efficiency is inevitable with Magit and few of his helpers.
 ** Magit
@@ -315,6 +400,12 @@ One of the selling points for it is that every chunk can be separately staged. I
 [[https://github.com/pidu/git-timemachine][git-timemachine]] lets me go through previous commits in given file. It's not used often, but when it's needed it makes reverting files much easier.
 #+BEGIN_SRC emacs-lisp
   (use-package git-timemachine :ensure t)
+#+END_SRC
+** Edif
+I like `ediff` more than `smerge`, but that's probably just a personal    preference.
+#+BEGIN_SRC emacs-lisp
+(use-package ediff
+  :config (setq ediff-split-window-function 'split-window-horizontally))
 #+END_SRC
 * Programming
 Common setup for all programming modes
