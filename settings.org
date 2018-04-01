@@ -161,7 +161,23 @@ When some file that's being edited changes from some outside source (say, `git r
 #+END_SRC
 *** Writing and spelling
 English is not my native language so I need more help than some. I still try to keep spelling unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial help or taking priority in writing natural languages.
+**** fly-spell
+[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is version of embedded `fly-spell` package for catching spelling mistakes, but with added interface. This interface can easily be made to work with `ivy` which is convenient in this setup, other way would be to use popup.
 
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell-correct-ivy
+  :ensure t
+  :config (progn
+            (flyspell-mode 1)
+            (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
+#+END_SRC
+**** writegood-mode
+[[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is useful for checking for weasel words, passive voice or duplicates in prose.
+
+#+BEGIN_SRC emacs-lisp
+(use-package writegood-mode
+  :ensure t)
+#+END_SRC
 ** Remove unnecessary things
 *** Decorations
 If you use your Emacs without mouse, toolbar and scrollbar are just wastes of screen space. If you are not there yet, hopefully you will be...
@@ -229,7 +245,7 @@ I don't need to confirm or pick buffer when trying to kill it, just leave finger
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 #+END_SRC
 *** Paste
-When typing over selected text, I want it to be replaced and not appended. One of the rare cases when all other editors got it right and default Emacs don't.
+When typing over selected text, I want it to be replaced and not appended. One of the rare cases when all other editors got it right before Emacs.
 
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode 1)

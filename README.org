@@ -1,0 +1,6 @@
+
+I couldn't find a way to show contents of another .org file in README (any advice appreciated).
+
+Read it at [[./settings.org][settings.org]]
+
+
