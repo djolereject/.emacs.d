@@ -3,30 +3,33 @@
 #+EMAIL: djolereject@gmail.com
 #+PROPERTY: header-args :results silent :tangle (expand-file-name "settings.el" config-dir)
 
-* Intro
+* About
 Last Emacs bankruptcy forced me to try a different route - put everything in org file and have it documented, explained and never stale.
 
-This file (settings.org) is called from init.el by [[https://org-babel.readthedocs.io/en/latest/][Babel]] which represents [[https://orgmode.org/][Org-Mode]]'s capability to export, compile and execute code extracted from org files. All this setup is there to emulate old paradigm of [[https://github.com/limist/literate-programming-examples][Literate Programming]], which might have it's flaws but lisp config file is exactly where it shines. I will try not to underestimate "Literate" part of this concept and give thorough explanations for every line of code along with guiding principles for bigger sections.
+Explanations combined with code in one file is effectuating old paradigm of [[https://github.com/limist/literate-programming-examples][Literate Programming]], which might have it's flaws but lisp configuration file is exactly where it shines. I will try not to underestimate "Literate" part of this concept and give thorough explanations for every line of code along with guiding principles for bigger sections.
 
-Primary function for this repository is for my own setup of Emacs, but I went through some trouble to make it understandable to somebody who is not so proficient but wants to learn. Anyone can copy it verbatim, but I will try to explain in detail what am I doing in every section and add links where possible. This way, if you are looking on how to customize your Emacs, you can just pick something up from here if it suits you. Obviously this is made as opinionated setup, being my real init directory, but I hope that somebody could find some small stuff that could serve his personal needs. All the explanations and links are trying to achieve two purposes - 1) reminding future me what the hell was I thinking when I added something, and 2) showing someone else what that section is doing so it can be copied.
-For somebody who is starting his jurney with Emacs, this repo can be used verbatim and serve as a starting point for personal setup. My approach is fairly minimalistic so it can be built upon with ease, and separation of code blocks makes it easy to remove parts that are of no interest for somebody else.
-If you find something that could be done in simpler or better way feel free to tell me. This is in no way finished and I don't expect it ever to be.
+This is obviously opinionated setup, being my actual working ~init~, but I made some effort making parts of it separate and possible to apply or exclude on it's own. Reminding future me on what the hell I was thinking when I included something is part of the reason I'm writing this, but I also hope it can be of help to someone trying to learn how Emacs initialization works. I had tremendous help from other people's init directories and I hope detailed instructions presented here could help someone in similar fashion.
+
+For somebody who is starting his journey with Emacs, this repository can serve as a starting point for personal setup. Just copying it will leave you with nice looking and reasonable settings. I have a tendency for minimalism so this should be easy to build upon. Similarly, separation of code blocks makes it trivial to remove parts that are of no interest in someone else's workflow.
+
+If you find something achievable in simpler or more efficient way, please feel free to tell me. This is in no way finished and I don't expect it ever to be.
 
 ** Files in .emacs.d
 *** settings.org
-This is where the magic happens... Installations, setup and creation of global values is done in this file. After Babel extracts code from it, it goes in `config/settings.el` from where it's loaded. `Custom` creates another file in `config` with package installations which makes all of needed configuration for this setup.
-- Source of all packages is melpa-stable, which might not be enough for somebody who wants newest and shiniest toys. You can replace package source with [[https://melpa.org/packages][MELPA]] or [[http://marmalade-repo.org/packages/][Marmelade]], just be aware that they both have their problems and don't rely 100% on having the source available at all times. Package sources are still evolving ecosystem and everything relies on your specific needs, but [[https://stable.melpa.org/packages/][Melpa Stable]] should suffice to most. 
-- Installation is done via [[https://github.com/jwiegley/use-package][use-package]], which at this time looks superior to all other techniques and I tried them all. Possibility to install, require and define everything in one place is something I was hoping for for a long time and `use-package` delivered. Some packages might make you jump through hoops if you try to install them this way, but it's worth it.
+This is where the magic happens... [[https://org-babel.readthedocs.io/en/latest/][Babel]] extracts code from this file copying it to self-created ~config/settings.el~ which Emacs uses for initialization. Using that extracted code ~Custom~ creates ~config/custom.el~ and lists packages mentioned, preparing them for download and installation.
+
+- Source of all packages is [[https://stable.melpa.org/][MELPA Stable]], which might not be enough for somebody who wants newest and shiniest toys. You can replace package source with [[https://melpa.org/packages][MELPA]] or [[http://marmalade-repo.org/packages/][Marmelade]], just be aware that they both have their problems and never rely 100% on having the source available at all times. Emacs package sources are still evolving ecosystem and everything relies on your specific needs, but ~melpa-stable~ should suffice to most. 
+- Strategy used for installation is [[https://github.com/jwiegley/use-package][use-package]], which to me looks superior to all other techniques (and I tried them all). Possibility to require and define package in the same place where you are setting it's behavior does wonders for readability. Some packages might make you jump through hoops if you try to install them this way, but it's worth it.
 *** init.el
-In `init` we have to set some things beforehand so `settings` can run consistently between reboots and there is no clutter created in emacs root directory.
-- `(package-initialize)` is there just because `Custom` would put it there anyway being the starting file of config.
-- `config-dir` and `data-dir` are names of directories that we want for variables and they are explained in more detail in `no-littering` package explanation. When I included this package, it became obvious that some other transient files should have their place in those directories so I pulled their creation from `no-littering` and put it in preprocessing stage.
+In ~init~ we have to set some things beforehand so ~settings~ can run consistently between reboots and there is no clutter created in Emacs root directory.
+- ~(package-initialize)~ is there just because ~Custom~ would put it there anyway being the starting file of initialization.
+- ~config-dir~ and ~data-dir~ are names of directories that we want for variables in ~no-littering~ package. When I started using ~no-littering~ it became obvious that some other transient files should have their place in those directories too so I put their creation in pre-processing stage.
 *** README
-Just a link to `settings.org` so everything looks nice on github.
+Just a link to ~settings.org~ so everything looks nice on github.
 * Prerequisites
-Before we go on with installing packages it's essential to configure and setup some things. Everything in this section concerns initializing `set-package` and making sure we don't create clutter around with default settings.
+Before we go on with installing packages it's essential to configure some things. Everything in this section concerns initializing ~set-package~ and making sure we don't create clutter in install directory.
 ** Sources
-Packages are pulled from melpa stable, be conservative about adding other repos. Having only one repo keeps things simple and neat, and I mostly don't need fancy, rare or bleeding edge packages. If that need arises, I can always download it locally and set source to `use-package`, making it even more secure.
+Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. If that need arises I can always download it locally and set local source for ~use-package~, making it even more secure.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
@@ -34,15 +37,14 @@ Packages are pulled from melpa stable, be conservative about adding other repos.
 (package-initialize)
 #+END_SRC
 ** TLS Setup
-Before installing anything it's essential to setup TLS certificate, because Emacs is not handling that in ideal way. We can't use `use-package` for this purpose because it's managed before *ANY* installation, including `use-package`.
-For openssl to work, on OSX we need to install `libressl`, which is easiest to do via Homebrew: `brew install libressl`, other systems may need some other setup or even none (which I believe goes for any popular distro).
+Before installing anything, it's essential to setup TLS certificate because Emacs is not handling that in ideal way. For openssl to work on OSX we need to install ~libressl~, which is easiest to do via [[https://brew.sh/][Homebrew]]: ~brew install libressl~. Other systems may need some other setup or even none (which I believe goes for any popular Linux distro).
 
 #+BEGIN_SRC emacs-lisp
 (require 'gnutls)
 (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
 #+END_SRC
-** Install `use-package`
-I stated everything I think of `use-package` in Intro, so get on with it. For you with different preferences about your packages, bear in mind that every piece of code that uses it probably can be replaced with said alternative. This setup could be copied with some other macro, but I haven't tried it so you are on your own here.
+** use-package
+I stated everything I think of ~use-package~ in intro, so I won't explain further why it's my preferred installer. This setup could obviously work with some other macro, but I'm not sure if some discrepancies could arise.
 
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -51,10 +53,10 @@ I stated everything I think of `use-package` in Intro, so get on with it. For yo
 (eval-when-compile
   (require 'use-package))
 #+END_SRC
-** Install `no-littering`
-[[https://github.com/emacscollective/no-littering][no-littering]] package is the first we are going to install. It's job is to make subdirectories in user's .emacs directory, and save all tmp files there. This reduces clutter and helps with having one place to look in case of something missing.
-- `config` dir is for autogenerated files that would end up cluttering `init.el`. `settings.el` and `custom.el` are created on start, but any package that needes configuration files should use this directory to save them.
-- `data` serves as temporary directory for all packages. Emacs's `auto-save` and `backup` are placed there, along with any other package that needs to save some transient data.
+** no-littering
+[[https://github.com/emacscollective/no-littering][no-littering]] package is the first we are going to install. It's job is to make sub-directories in ~.init.d~ and save all temporary files there. This reduces clutter and helps with having one place to look in case of something missing.
+- ~/config~ is for auto generated files that would end up cluttering ~init.el~. Process of installation creates ~settings.el~ and ~custom.el~ files, but any package that needs configuration files should use this directory to save them.
+- ~/data~ serves as temporary directory for all packages. This is place for ~auto-save~ and ~backup~, along with any other package that needs to save some transient data.
 
 #+BEGIN_SRC emacs-lisp
   (use-package no-littering
@@ -75,38 +77,157 @@ I stated everything I think of `use-package` in Intro, so get on with it. For yo
                       (when (file-exists-p custom-file)
                         (load custom-file)))))
 #+END_SRC
-** Supress warnings
-Some packages are sending unnecessary warnings when they are installed through `use-package` and it's bothering me so this is just for my OCD. Default value for this variable is :warning and I turned it up to :error.
+** Suppress warnings
+Some packages are sending unnecessary warnings while installed through ~use-package~ and it's bothering me, so this is just for my OCD. Default value for this variable is ~:warning~ and I boosted it up to ~:error~.
 
 #+BEGIN_SRC emacs-lisp
 (setq warning-minimum-level :error)
 #+END_SRC
-* Basic Layout
-In this section we are dealing with overall look and behavior of Emacs. Values and packages set here are the ones that will influence your overall experience and it would be good for you to understand what they are doing. I tried to add links to repos or other pages of importance that can shine some light on what given pacakage is trying to achieve.
-** Set general defaults
+* General Settings
+In this section we are dealing with overall look and behavior of Emacs. Values and packages set here are the ones that will influence every mode in Emacs and it would be good for you to understand what they are doing. I tried to add links to repos or other pages of importance that can shine some light on what given package is trying to achieve.
+** Defaults
 *** Maximize Emacs
-I want my GUI app to take as much real estate as possible.
+GUI app should take as much screen real estate as possible.
 
 #+BEGIN_SRC emacs-lisp
 (custom-set-variables
  '(initial-frame-alist (quote ((fullscreen . maximized)))))
 #+END_SRC
-*** Set Cursor
-Cursor is set to be 'bar (other options include: 'box, 'hollow, 'hbar, nil). This is purely personal preference, play with it and find what works for you.
+*** Cursor appearance
+I want text cursor looking like ~bar~ (other options include: ~box~, ~hollow~, ~hbar~, ~nil~). This is purely personal preference, play with it and find what works for you.
 
 #+BEGIN_SRC emacs-lisp
 (setq-default cursor-type 'bar)
 #+END_SRC
-*** Starting mode
-I'm often opening various files from Finder with Emacs, and in most cases `text-mode` seems to be the best fit if file extension is exotic.
+*** Default mode
+Opening files with unknown extension is best to start in ~text-mode~ and specify later.
 
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'text-mode)
 #+END_SRC
-*** Minibuffer
-There are lot of packages that are trying to influence all aspects of working with emacs and consequentialy change behavior of minibuffer. I tried working with Helm, but in the end decided I don't need such an invasive package because I started spending lot of time catching it's quirks around some other big packages. Another possible route is having just `ido-mode` and big number of specialized settings for different scenarios which also tends to become clutter after a while. For now, I settled with `ivy` which is a little bit more "overall solution" than I'm comfortable with, but it keeps things confined. I might rethink this decision if it gets too much in the way.
+** Unnecessary things
+*** Decorations
+If you use your Emacs without mouse, toolbar and scrollbar are just wastes of screen space. If you are not there yet, you will be in time.
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+#+END_SRC
+*** Messages
+While these screens might be helpful for beginners when they start their journey with Emacs, after a while they become annoyances.
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+#+END_SRC
+*** Confirmation
+Expect y/n instead of yes/no when needing confirmation - this really ought to be default.
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+*** Tooltips
+I never need GUI tooltips in Emacs and can't imagine type of usage that welcomes it.
+
+#+BEGIN_SRC emacs-lisp
+(setq tooltip-use-echo-area t)
+#+END_SRC
+*** Sound Beep
+Beep is frequent, irritating and not at all helpful. Send it to message screen instead of speakers so you still have some kind of visible cue that it happened.
+
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function (lambda () (message "*beep*")))
+#+END_SRC
+** Buffer specific
+*** Switching
+It's possible to just use ~other-window~ command and add some keybindings to it, but [[https://github.com/abo-abo/ace-window][ace-window]] is easier to use and brings some additional options.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+  :ensure t
+  :config (progn
+            (global-set-key (kbd "M-o") 'ace-window)
+            (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
+#+END_SRC
+*** Clear
+It might be personal quirk but most frequent use of ~C-l~ for me is to move cursor position to top of the screen, so I usually type ~C-l C-l~. Whenever something is repeating, aim for simplification.
+
+#+BEGIN_SRC emacs-lisp
+(setq recenter-positions '(top middle bottom))
+#+END_SRC
+*** Cursor position
+Show current row and column at the bottom of the buffer. This is helpful in most modes and unobtrusive in rest of them.
+
+#+BEGIN_SRC emacs-lisp
+(setq column-number-mode t)
+#+END_SRC
+*** Wrap lines
+Only case known to me where you would want unwrapped text is parsing binary files. It's better to override behavior for those purposes, then to scroll left-right through buffer in all other scenarios.
+
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode 1)
+#+END_SRC
+*** Double space sentences
+American typist's convention for end of the sentence can cause trouble in some modes. If you need it just turn on ~M-x repunctuate-sentences~.
+
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
+** Editing
+*** Fast buffer kill
+Confirming or picking exact buffer when trying to kill it wastes time, just leave finger on Control and do it faster with ~C-x C-k~.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+#+END_SRC
+*** Pasting text
+When typing over selected text, I want it replaced and not appended. One of the rare cases when Emacs is in the wrong compared to majority of editors.
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+*** Undo Tree
+Interesting and efficient way of dealing with undo in Emacs. Takes some time to get used to, but ability to move through undo/redo tree can be great.
+
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :ensure t
+  :init (global-undo-tree-mode))
+#+END_SRC
+*** Whitespaces
+Really simple package, but I find it incredibly useful. Replaces rows of whitespaces with just one or deletes single whitespace. Shortcut is ~M-Space~.
+
+#+BEGIN_SRC emacs-lisp
+(use-package shrink-whitespace
+  :ensure t
+  :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
+#+END_SRC
+** OS-specific
+For now, I only customized things related to OSX because that's the system I'm spending most of my time in. I plan to do fine tuning for few popular distros, mainly Ubuntu.
+
+*** OSX
+- Bound ~Control~ to ~Caps-Lock~ key system-wide, not inside Emacs. This is something I encourage everybody to try.
+- ~Option~ is ~Meta~ by default, no need to do anything there.
+- Left ~Cmd~ is ~Super~ by default, no need to do anything there.
+- Right ~Cmd~ is ~Control~, it's the only key that makes sense for right hand.
+- Suppress killing and minimizing Emacs with OS shortcuts.
+
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'darwin)
+  (global-set-key (kbd "s-q") nil)
+  (global-set-key (kbd "s-w") nil)
+  (global-set-key (kbd "C-~") nil)
+  (setq mac-right-command-modifier 'control))
+#+END_SRC
+** Minibuffer
+There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time catching it's quirks around some other big packages. 
+
+Another possible route is having just ~ido-mode~ and big number of specialized settings for different scenarios which also tends to become clutter after a while. 
+
+For now, I settled with ~ivy~ which is a little bit more "overall solution" than I'm comfortable with, but it keeps things confined. I might rethink this decision if it gets too much in the way.
 **** Ivy
-[[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy]] is improved version of `ido-mode` with much more customization options. It removes need for `ubiquitous` and `smex` and have good overall feel. I just started using it recently but I like what I'm seeing.
+[[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy]] is improved version of ~ido-mode~ with much more customization options. It removes need for ~ubiquitous~ and ~smex~ and have good overall feel. I just started using it recently but I like what I'm seeing.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
@@ -144,7 +265,7 @@ There are lot of packages that are trying to influence all aspects of working wi
                    '(("j" find-file-other-window "other"))))
 #+END_SRC
 **** Which key
-[[https://github.com/justbur/emacs-which-key][`which-key`]] opens popup after entering incomplete command. Delay of one second gives enough time to finish command without seeing it, and if I'm stuck it shows available endings to entered prefix.
+[[https://github.com/justbur/emacs-which-key][which-key]] opens popup after entering incomplete command. Delay of one second gives enough time to finish command without seeing it, and if I'm stuck it shows available endings to entered prefix.
 
 #+BEGIN_SRC emacs-lisp
 (use-package which-key 
@@ -154,140 +275,42 @@ There are lot of packages that are trying to influence all aspects of working wi
   (which-key-mode))
 #+END_SRC
 *** Reverting buffers
-When some file that's being edited changes from some outside source (say, `git reset`), I expect buffer to render that change immediately.
+When file edited in buffer changes from some outside source (say, ~git reset~), I expect buffer to render that change immediately.
 
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode t)
 #+END_SRC
 *** Writing and spelling
-English is not my native language so I need more help than some. I still try to keep spelling unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial help or taking priority in writing natural languages.
+English is not my native language so I need more help than some. I still try to keep spellcheck unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial suggestions or is writing more in natural than programming languages.
+
 **** fly-spell
-[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is version of embedded `fly-spell` package for catching spelling mistakes, but with added interface. This interface can easily be made to work with `ivy` which is convenient in this setup, other way would be to use popup.
+[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is wrapper for ~fly-spell~ with interface that can easily work with ~ivy~, ~helm~ or simple popup presentation. 
+
+- ~fly-spell~ uses separate program to compare words. ~brew install aspell~ is easy way to do it on Mac but you have to bind it's path manually.
+- Correcting previous word while typing is the most common use-case so it's bound to convenient shortcut: ~C-;~
 
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell-correct-ivy
   :ensure t
   :config (progn
-            (flyspell-mode 1)
+            (when (eq system-type 'darwin)
+              (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+              (setq exec-path (append exec-path '("/usr/local/bin"))))
+            (add-hook 'text-mode-hook 'flyspell-mode)
             (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
 #+END_SRC
 **** writegood-mode
-[[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is useful for checking for weasel words, passive voice or duplicates in prose.
+[[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is checking for weasel words, passive voice or duplicates in prose.
 
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
   :ensure t)
 #+END_SRC
-** Remove unnecessary things
-*** Decorations
-If you use your Emacs without mouse, toolbar and scrollbar are just wastes of screen space. If you are not there yet, hopefully you will be...
-
-#+BEGIN_SRC emacs-lisp
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
-#+END_SRC
-*** Messages
-While these screens might be helpful for beginners when they start to play with Emacs, after a while they become annoyances.
-
-#+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-message t)
-(setq inhibit-splash-screen t)
-(setq initial-scratch-message nil)
-#+END_SRC
-*** Yes/No
-Expect y/n instead of yes/no - this really ought to be default.
-
-#+BEGIN_SRC emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-*** Tooltips
-I never need GUI tooltips in Emacs and can't imagine type of usage that welcomes it.
-
-#+BEGIN_SRC emacs-lisp
-(setq tooltip-use-echo-area t)
-#+END_SRC
-*** Beep
-Beep is frequent, irritating and not at all helpful. Send it to message screen instead of speakers so you still have some kind of visible cue that it happened.
-
-#+BEGIN_SRC emacs-lisp
-(setq ring-bell-function (lambda () (message "*beep*")))
-#+END_SRC
-** Customize rows and columns
-*** C-l behavior
-I found myself that I mostly use C-l to move position to top of the screen, so I usualy type C-l C-l. Why not customize it if it's repeating?
-
-#+BEGIN_SRC emacs-lisp
-(setq recenter-positions '(top middle bottom))
-#+END_SRC
-*** Cursor position
-Show current row and column at the bottom of the buffer. This is helpful in most modes and themes, and unobtrusive in rest of them.
-
-#+BEGIN_SRC emacs-lisp
-(setq column-number-mode t)
-#+END_SRC
-*** Wrap lines
-Only scenario where you want text not to be wrapped is when looking source of some binary files. It's better to override behavior for those purposes, then to scroll buffer in left-right direction in all other scenarios.
-
-#+BEGIN_SRC emacs-lisp
-(global-visual-line-mode 1)
-#+END_SRC
-*** Double space sentences
-Let's ignore American typist's convention however much it be helpful in deducing end of the sentence. If you want it somewhere, just use `M-x repunctuate-sentences`.
-
-#+BEGIN_SRC emacs-lisp
-(setq sentence-end-double-space nil)
-#+END_SRC
-** Editing
-*** Easy kill
-I don't need to confirm or pick buffer when trying to kill it, just leave finger on Control and do it with `C-x C-k`.
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
-#+END_SRC
-*** Paste
-When typing over selected text, I want it to be replaced and not appended. One of the rare cases when all other editors got it right before Emacs.
-
-#+BEGIN_SRC emacs-lisp
-(delete-selection-mode 1)
-#+END_SRC
-*** Undo Tree
-Interesting and superior way of dealing with undo in Emacs. Takes some time to get used to, but ability to move through undo/redo tree is great when you get used to it.
-
-#+BEGIN_SRC emacs-lisp
-(use-package undo-tree
-  :ensure t
-  :init (global-undo-tree-mode))
-#+END_SRC
-*** Whitespaces
-When there are more than one whitespace in row, it's common to want them all replaced by just one whitespace. In case there is just one whitespace, we might want that one gone too.
-It's really simple package, but I find it incredibly useful. Shortcut is `M-Space`.
-
-#+BEGIN_SRC emacs-lisp
-(use-package shrink-whitespace
-  :ensure t
-  :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
-#+END_SRC
-** OS-specific
-For now, I only customized things related to OSX, because that's the system I'm spending most of my time. I plan to take some time these days to do fine tuning on few popular distros.
-
-*** OSX
-- Caps lock is bound to Control system-wide, not inside Emacs. This is something everybody should try.
-- Option is Meta by default, no need to do anything there
-- Left Cmd is Super by default, no need to do anything there
-- Right Cmd is Control
-- Killing and minimizing Emacs by OS shortcuts are supressed.
-
-#+BEGIN_SRC emacs-lisp
-(when (eq system-type 'darwin)
-  (global-set-key (kbd "s-q") nil)
-  (global-set-key (kbd "s-w") nil)
-  (global-set-key (kbd "C-~") nil)
-  (setq mac-right-command-modifier 'control))
-#+END_SRC
 ** Meta
-Working with file `settings.org` is done so regularly to merit it's own key bindings.
+Emacs configuration is job that is never really finished so I have some convenient shortcuts concerning ~settings.org~ file.
+
 *** Open
-Speed dial `settings.org` with `C-c i`.
+Speed dial ~settings.org~ with ~C-c i~.
 
 #+BEGIN_SRC emacs-lisp
  (defun djole/find-settings ()
@@ -297,7 +320,7 @@ Speed dial `settings.org` with `C-c i`.
   (global-set-key (kbd "C-c i") 'djole/find-settings)
 #+END_SRC
 *** Reload
-When we change settings.org, we want it quickly reloaded to observe how changes influenced running Emacs. Shortcut is `C-c r`.
+When we change settings.org, we want it quickly reloaded to observe how changes influenced running Emacs. Shortcut is ~C-c r~.
 
 #+BEGIN_SRC emacs-lisp
 (defun djole/reload-settings ()
@@ -307,9 +330,7 @@ When we change settings.org, we want it quickly reloaded to observe how changes 
 (global-set-key (kbd "C-c r") 'djole/reload-settings)
 #+END_SRC
 * Theme
-Theme deserves top-level entry, because it's highly personal and separate from most of the other settings. If you don't like my choice, there is lot's of sources out there so pick one that suits you. For now, I opted for `github` theme from `base16`. This will change often if history is any indicator but `github` is clean and I needed a change from dark themes.
-
-[[https://belak.github.io/base16-emacs/][- Available themes in base16]]
+Picking theme is personal for everybody. If you don't like my choice, explore some resources out there and pick one that suits you. For now, I opted for ~github~ theme from ~base16~. This will change often if history is any indicator but it's clean and I wanted to try light theme for once. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
 
 #+BEGIN_SRC emacs-lisp
 (use-package base16-theme
@@ -319,10 +340,13 @@ Theme deserves top-level entry, because it's highly personal and separate from m
 ;; close candidates: 'base16-mexico-light 'base16-atelier-cave-light
 #+END_SRC
 * Org Mode
-One of the biggest and most popular packages clearly gets described in separate top-level entry. There are so many ways it could be customized, but I try to minimize it and go with defaults as much as I can. I will soon enhance this section with templates and captures.
+Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
+
+TODO: enhance this section with templates and captures.
+
 ** General Layout
 *** Indentation
-I want everything indented to the level of it's title, but don't want further indentation of code.
+Indent everything to the level of it's title, but skip further indentation of code.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
@@ -335,25 +359,25 @@ Add some colors to code using native mode for given language.
 (setq org-src-fontify-natively t)
 #+END_SRC
 *** Code confirmation
-I never accidentaly type `C-c C-c` so there is no need for confirmation, just run it please.
+I never accidentally type ~C-c C-c~ so there is no need for confirmation.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-confirm-babel-evaluate nil)
 #+END_SRC
-*** Code tabs
+*** Tabs in code
 Tabs should behave in expected way when in code block, default is quite confusing.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-src-tab-acts-natively t)
 #+END_SRC
 *** Emphasized text
-Emphasis are displayed immediately like in: *Bold*, /italic/...
+Display emphasis immediately: *Bold*, /italic/...
 
 #+BEGIN_SRC emacs-lisp
 (setq org-hide-emphasis-markers t)
 #+END_SRC
 *** Special symbols
-Symbols should be presented as intended (pi -> \pi{}).
+Present symbols as intended (pi -> \pi{}).
 
 #+BEGIN_SRC emacs-lisp
 (setq org-pretty-entities t)
@@ -367,9 +391,9 @@ Symbols should be presented as intended (pi -> \pi{}).
   (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 ** Bindings
-While trying to be as close to defaults as possible, I still have some preferences when it comes to binding keys in `org-mode`.
+While trying to be as close to defaults as possible, I still have some preferences when it comes to binding keys in ~org-mode~.
 *** Changing levels
-- Promoting/Demoting with Super-left/righ
+- Promoting/Demoting with Super-left/right
 - Moving subtree with Super-up/down
 - This leaves M-right/left to behave same as in other modes
 
@@ -384,14 +408,14 @@ While trying to be as close to defaults as possible, I still have some preferenc
              (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)))
 #+END_SRC
 *** Insert elisp template
-Standard insert is done via `<s + TAB`, and I mostly need emacs-lisp, so I made `<el` template.
+Standard insert is done via ~<s + TAB~, and I mostly need emacs-lisp, so I made ~<el~ template.
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-structure-template-alist
 	       '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
 #+END_SRC
 ** Appearance
-Just one way for `org-mode` to look nice. I copied most of it from somewhere and added few things, but it's matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will often fine tune if you are changing your theme.
+Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (let*
@@ -416,7 +440,7 @@ Just one way for `org-mode` to look nice. I copied most of it from somewhere and
                             `(org-document-title ((t (,@headline ,@variable-tuple :height 1.33 :underline nil))))))
 #+END_SRC
 ** Exporters
-I tried with `pandoc-mode` but it looks too intrusive, and `ox-pandoc` has some problems installing from melpa stable, so I will leave this section to be updated in some later time. I just installed package for exporting to markdown for now and I will return to it when practical need arises for exporting pdf or latex.
+I tried with ~pandoc-mode~ but it looks too intrusive, and ~ox-pandoc~ has some problems installing from ~melpa-stable~. Exporting to markdown is only thing I need for now so I will return to this section when exporting to PDF or latex calls for more.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ox-gfm
@@ -424,10 +448,12 @@ I tried with `pandoc-mode` but it looks too intrusive, and `ox-pandoc` has some 
   :ensure t)
 #+END_SRC
 * Git
-Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene, showing factual difference between "porcelain" and "plumbing". After spending some time on adjusting your practices, raising efficiency with Magit and few of his helpers will look like magic to seasoned git user.
+Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, efficiency raised with ~Magit~ will look like magic to seasoned git user.
+
 ** Magit
 Learn it, use it and never look back on days of typing something like: 
-`git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit`
+
+~git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit~
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
@@ -435,8 +461,9 @@ Learn it, use it and never look back on days of typing something like:
   :bind ("C-x g" . magit-status))
 #+END_SRC
 ** Git Gutter
-[[https://github.com/syohex/emacs-git-gutter][git-gutter]] is displaying diff from last stage in left column (changed lines are presented as: "~", added: "+" and removed: "-"). One of the selling points for it is that every chunk can be separately staged.
-I set prefix for`git-gutter` commands to `M-g` but whatever works for you.
+[[https://github.com/syohex/emacs-git-gutter][git-gutter]] is displaying diff from last stage in left column (presenting changed lines as: "~", added: "+" and removed: "-"). One of the selling points for this package is that every chunk can be separately staged.
+
+I find ~M-g~ to be good prefix for ~git-gutter~ commands but use whatever works for you.
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
@@ -460,13 +487,13 @@ I set prefix for`git-gutter` commands to `M-g` but whatever works for you.
             ))
 #+END_SRC
 ** Git Time Machine
-[[https://github.com/pidu/git-timemachine][git-timemachine]] lets me go through previous commits in given file. It's not used often, but when it's needed it makes reverting files much easier.
+[[https://github.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents it in obvious way.
 
 #+BEGIN_SRC emacs-lisp
   (use-package git-timemachine :ensure t)
 #+END_SRC
-** Edif
-I like `ediff` more than `smerge`, but that's probably just a personal preference. Give it a try and remove if you don't find it better.
+** Ediff
+I like ~ediff~ more than ~smerge~, but that's probably just a personal preference. Give it a try.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ediff
@@ -474,7 +501,7 @@ I like `ediff` more than `smerge`, but that's probably just a personal preferenc
 #+END_SRC
 * Programming
 Common setup for all programming modes.
-This is the section I will come back to!
+TODO: This is the section I will come back to!
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -482,9 +509,10 @@ This is the section I will come back to!
 #+END_SRC
 * Small side packages
 ** Touch typing
-Spare minutes are best spent on practicing some touch typing. Let's add few packages that can help with that.
-*** `speed-type`
-[[https://github.com/hagleitn/speed-type][speed-type]] takes practicing examples on random and it's sometimes very demanding with exotic examples that it puts in front of you.
+Spare minutes are best spent on practicing some touch typing and I added some packages that can be helpful.
+
+*** speed-type
+[[https://github.com/hagleitn/speed-type][speed-type]] takes practicing examples on random which sometimes can be demanding with exotic examples that it puts in front of you.
 
 #+BEGIN_SRC emacs-lisp
 (use-package speed-type :ensure t)
@@ -495,7 +523,6 @@ Spare minutes are best spent on practicing some touch typing. Let's add few pack
 #+BEGIN_SRC emacs-lisp
 (use-package typit :ensure t)
 #+END_SRC
-
 
 
 
