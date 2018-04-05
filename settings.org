@@ -483,8 +483,7 @@ I find ~M-g~ to be good prefix for ~git-gutter~ commands but use whatever works 
             (global-set-key (kbd "M-g r") 'git-gutter:revert-hunk)
             (global-set-key (kbd "M-g m") #'git-gutter:mark-hunk)
             (global-set-key (kbd "M-g n") 'git-gutter:next-hunk)
-            (global-set-key (kbd "M-g p") 'git-gutter:previous-hunk)
-            ))
+            (global-set-key (kbd "M-g p") 'git-gutter:previous-hunk)))
 #+END_SRC
 ** Git Time Machine
 [[https://github.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents it in obvious way.
@@ -500,12 +499,63 @@ I like ~ediff~ more than ~smerge~, but that's probably just a personal preferenc
   :config (setq ediff-split-window-function 'split-window-horizontally))
 #+END_SRC
 * Programming
-Common setup for all programming modes.
-TODO: This is the section I will come back to!
+** General settings
+*** Line numbers
+Show line numbers in any programming mode.
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook 'linum-mode)
-(subword-mode)
+#+END_SRC
+
+*** Indentation
+Autoindent code (specifics are usually delegated to mode).
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'auto-indent-mode)
+#+END_SRC
+
+*** Camel Case
+Treat CamelCase as separate words while editing.
+
+#+BEGIN_SRC emacs-lisp
+(subword-mode 1)
+#+END_SRC
+** Ruby
+Use yard and robe modes with ~ruby-mode~.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'ruby-mode-hook 'yard-mode)
+(add-hook 'ruby-mode-hook 'robe-mode)
+#+END_SRC
+*** RSpec
+When rake is available use it.
+
+#+BEGIN_SRC emacs-lisp
+(setq rspec-use-rake-when-possible nil)
+#+END_SRC
+
+Make RSpec get into editing mode on pry.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
+#+END_SRC
+
+Scroll to the first test failure
+
+#+BEGIN_SRC emacs-lisp
+(setq compilation-scroll-output 'first-error)
+#+END_SRC
+
+Don't ask for confirmation of save when compiling
+#+BEGIN_SRC emacs-lisp
+(setq compilation-ask-about-save nil)
+#+END_SRC
+*** Rubocop
+[[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
+#+BEGIN_SRC emacs-lisp
+(use-package rubocop
+  :ensure t
+  :init (require 'ruby-mode)
+  :config (add-hook 'ruby-mode-hook #'rubocop-mode))
 #+END_SRC
 * Small side packages
 ** Touch typing
