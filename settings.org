@@ -19,7 +19,7 @@ If you find something achievable in simpler or more efficient way, please feel f
 This is where the magic happens... [[https://org-babel.readthedocs.io/en/latest/][Babel]] extracts code from this file copying it to self-created ~config/settings.el~ which Emacs uses for initialization. Using that extracted code ~Custom~ creates ~config/custom.el~ and lists packages mentioned, preparing them for download and installation.
 
 - Source of all packages is [[https://stable.melpa.org/][MELPA Stable]], which might not be enough for somebody who wants newest and shiniest toys. You can replace package source with [[https://melpa.org/packages][MELPA]] or [[http://marmalade-repo.org/packages/][Marmelade]], just be aware that they both have their problems and never rely 100% on having the source available at all times. Emacs package sources are still evolving ecosystem and everything relies on your specific needs, but ~melpa-stable~ should suffice to most. 
-- Strategy used for installation is [[https://github.com/jwiegley/use-package][use-package]], which to me looks superior to all other techniques (and I tried them all). Possibility to require and define package in the same place where you are setting it's behavior does wonders for readability. Some packages might make you jump through hoops if you try to install them this way, but it's worth it.
+- Strategy used for installation is [[https://github.com/jwiegley/use-package][use-package]], which to me looks superior to all other techniques (and I tried them all). Possibility to require and define package in the same place where you are setting its behavior does wonders for readability. Some packages might make you jump through hoops if you try to install them this way, but it's worth it.
 *** init.el
 In ~init~ we have to set some things beforehand so ~settings~ can run consistently between reboots and there is no clutter created in Emacs root directory.
 - ~(package-initialize)~ is there just because ~Custom~ would put it there anyway being the starting file of initialization.
@@ -44,7 +44,7 @@ Before installing anything, it's essential to setup TLS certificate because Emac
 (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
 #+END_SRC
 ** use-package
-I stated everything I think of ~use-package~ in intro, so I won't explain further why it's my preferred installer. This setup could obviously work with some other macro, but I'm not sure if some discrepancies could arise.
+I already explained why I like ~use-package~, so I won't go further with reasons it's my preferred installer. This setup could obviously work with some other macro, but I'm not sure if some discrepancies could arise.
 
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -85,7 +85,7 @@ Some packages are sending unnecessary warnings while installed through ~use-pack
 #+END_SRC
 * General Settings
 In this section we are dealing with overall look and behavior of Emacs. Values and packages set here are the ones that will influence every mode in Emacs and it would be good for you to understand what they are doing. I tried to add links to repos or other pages of importance that can shine some light on what given package is trying to achieve.
-** Defaults
+** Set defaults
 *** Maximize Emacs
 GUI app should take as much screen real estate as possible.
 
@@ -105,7 +105,7 @@ Opening files with unknown extension is best to start in ~text-mode~ and specify
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'text-mode)
 #+END_SRC
-** Unnecessary things
+** Remove unwanted
 *** Decorations
 If you use your Emacs without mouse, toolbar and scrollbar are just wastes of screen space. If you are not there yet, you will be in time.
 
@@ -151,7 +151,7 @@ It's possible to just use ~other-window~ command and add some keybindings to it,
             (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
 #+END_SRC
 *** Clear
-It might be personal quirk but most frequent use of ~C-l~ for me is to move cursor position to top of the screen, so I usually type ~C-l C-l~. Whenever something is repeating, aim for simplification.
+It might be personal quirk but most frequent use of ~C-l~ command for me is to move cursor position to top of the screen, so I usually type ~C-l C-l~. Whenever something is repeating, aim for simplification.
 
 #+BEGIN_SRC emacs-lisp
 (setq recenter-positions '(top middle bottom))
@@ -308,7 +308,6 @@ English is not my native language so I need more help than some. I still try to 
 #+END_SRC
 ** Meta
 Emacs configuration is job that is never really finished so I have some convenient shortcuts concerning ~settings.org~ file.
-
 *** Open
 Speed dial ~settings.org~ with ~C-c i~.
 
@@ -330,14 +329,15 @@ When we change settings.org, we want it quickly reloaded to observe how changes 
 (global-set-key (kbd "C-c r") 'djole/reload-settings)
 #+END_SRC
 * Theme
-Picking theme is personal for everybody. If you don't like my choice, explore some resources out there and pick one that suits you. For now, I opted for ~github~ theme from ~base16~. This will change often if history is any indicator but it's clean and I wanted to try light theme for once. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
+Picking theme is personal for everybody so if you don't like my choice, explore some resources out there and pick one that suits you. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
 
 #+BEGIN_SRC emacs-lisp
-(use-package base16-theme
-  :ensure t
-  :if window-system
-  :config (load-theme 'base16-github t))
-;; close candidates: 'base16-mexico-light 'base16-atelier-cave-light
+  (use-package base16-theme
+    :ensure t
+    :if window-system
+    :config (load-theme 'base16-apathy t))
+  ;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
+  ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale 
 #+END_SRC
 * Org Mode
 Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
@@ -442,23 +442,28 @@ Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and
 ** Exporters
 I tried with ~pandoc-mode~ but it looks too intrusive, and ~ox-pandoc~ has some problems installing from ~melpa-stable~. Exporting to markdown is only thing I need for now so I will return to this section when exporting to PDF or latex calls for more.
 
+TODO: Needs more exporting options!
+
 #+BEGIN_SRC emacs-lisp
 (use-package ox-gfm
   :after (org)
   :ensure t)
 #+END_SRC
 * Git
-Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, efficiency raised with ~Magit~ will look like magic to seasoned git user.
+Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
 
 ** Magit
 Learn it, use it and never look back on days of typing something like: 
 
 ~git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit~
 
+I'm not a fan of frequent confirmations for common tasks, so staging all files is added to 'no confirm' list.
+
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :ensure t
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :config (add-to-list 'magit-no-confirm 'stage-all-changes))
 #+END_SRC
 ** Git Gutter
 [[https://github.com/syohex/emacs-git-gutter][git-gutter]] is displaying diff from last stage in left column (presenting changed lines as: "~", added: "+" and removed: "-"). One of the selling points for this package is that every chunk can be separately staged.
