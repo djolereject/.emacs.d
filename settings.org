@@ -27,6 +27,7 @@ In ~init~ we have to set some things beforehand so ~settings~ can run consistent
 *** README
 Just a link to ~settings.org~ so everything looks nice on github.
 * Prerequisites
+Minimum Emacs version for this settings to work is ~26~, because it comes with org version ~9.1~. It's too much hustle to reinstall org from this file, because it's already loaded when it's evaluated.
 Before we go on with installing packages it's essential to configure some things. Everything in this section concerns initializing ~set-package~ and making sure we don't create clutter in install directory.
 ** Sources
 Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. If that need arises I can always download it locally and set local source for ~use-package~, making it even more secure.
@@ -463,26 +464,15 @@ Define default place for my agenda
 (setq org-agenda-files (list "~/org/test.org"))
 #+END_SRC
 ** Templates
-Let's create some capture templates for everyday use:
-#+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      '(("g" "Gym" entry (file+headline "~/org/gym.org" "Training")
-         "* %^{prompt|undefined|bench|squat|press|deadlift|push|pull|legs|} %?\n%t")
-        ("c" "Logbook entry" entry (file+datetree+prompt "~/org/k.org")
-         "* kurcic %?" :jump-to-captured nil)))
-
-#+END_SRC
-
 *** Autocomplete functions
 As seen in [[https://superuser.com/a/996191][Stack Overflow]].
 **** Completion Table
-Definitions of two possible options for dynamic completion.
 #+BEGIN_SRC emacs-lisp
 (defun djole/dynamic-completion-table-regexp (regexp &optional group buffer)
   "Return alist containing all matches for REGEXP in BUFFER. The returned alist contains the matches as keys, and each key is associated with a nil value.
 If the optional parameter GROUP (an integer) is supplied, only that part matching the corresponding parenthetical subexpression is taken as the key.
 If BUFFER is omitted, it defaults to the current buffer.  Note that the entire buffer is scanned, regardless of narrowing."
-  (let ((buffer (or buffer (current-buffer)))
+(let ((buffer (or buffer (current-buffer)))
         (group  (or group 0))
         table match)
     (with-current-buffer buffer
@@ -501,10 +491,17 @@ If BUFFER is omitted, it defaults to the current buffer.  Note that the entire b
   "Return alist containing all entries for FIELD in BUFFER. Look in BUFFER for all lines of the form \"FIELD: TEXT\", possibly with leading or trailing whitespace.
 If DELIMS is omitted, consider TEXT as a single item; otherwise, it should be a regexp matching the delimiters between the items inside TEXT.
 Empty items are discarded, and whitespace surrounding the delimiters is removed. The returned alist contains one key for each item found; all keys are associated with the value nil.
-If BUFFER is omitted, it defaults to the current buffer.  Note that the entire buffer is scanned, regardless of narrowing."
-  (require 'cl-lib)                     ; For `cl-mapcan'
-  (let ((table (djole/dynamic-completion-table-regexp (concat "^\\s-*" (regexp-quote field) "\\(.+\\)\\s-*$") 1 buffer)))
-    (cl-mapcan (lambda (x) (mapcar #'list (split-string (car x) delims :omit-nulls "\\s-+"))) table)))
+If BUFFER is omitted, it defaults to the current buffer. Note that the entire buffer is scanned, regardless of narrowing."
+(require 'cl-lib)                     ; For `cl-mapcan'
+  (let ((table (djole/dynamic-completion-table-regexp
+                (concat "^\\s-*"
+                        (regexp-quote field)
+                        ": \\(.+\\)\\s-*$")
+                1 buffer)))
+    (cl-mapcan (lambda (x)
+                 (mapcar #'list
+                         (split-string (car x) delims :omit-nulls "\\s-+")))
+               table)))
 #+END_SRC
 **** Completion Combine
 #+BEGIN_SRC emacs-lisp
@@ -528,17 +525,31 @@ If this function is invoked from within an Org-mode capture process, the current
 #+END_SRC
 *** Setting templates
 #+BEGIN_SRC emacs-lisp
-(setq org-default-notes-file "~/org/journal.org")
-
+(setq org-default-notes-file "~/org/vezba.org")
 (setq org-capture-templates '())
-(add-to-list 'org-capture-templates '("m" "meeting" entry (file+datetree org-default-notes-file) "* \
-%(djole/org-capture-read-multiple \"\*\*\*\*\" \"Exercise\" :dynamic \"[,:]\")
- sets: %^{sets}\t reps: %^{reps}\t weight: %^{weight} kg\
+(add-to-list 'org-capture-templates '("a" "VEZBA" entry (file+olp+datetree org-default-notes-file) "* \
+%(djole/org-capture-read-multiple \"****\" \"vezba\" :dynamic \"[,:]\")
+"))
+#+END_SRC
+OLD
+#+BEGIN_SRC emacs-lisp
+(setq org-default-notes-file "~/org/journal.org")
+(setq org-capture-templates '())
+(add-to-list 'org-capture-templates '("m" "meeting" entry (file+olp+datetree org-default-notes-file) "* \
+%(djole/org-capture-read-multiple \"****\" \"Exercise\" :dynamic \"[,:]\")
+ sets: %^{sets}\t reps: %^{reps}\t weight: %^{weight} kg
 "))
 ;;    Participants: %(my/org-capture-read-multiple \"Participants\" :dynamic \"[,:]\")
 ;; Sets: %^{Sets}  Reps: %^{Reps} Weight: %^{Weight}
 ;; %^{prompt|Exercise|Superset}
 #+END_SRC
+*** Old
+(setq org-capture-templates
+      '(("g" "Gym" entry (file+headline "~/org/gym.org" "Training")
+         "* %^{prompt|undefined|bench|squat|press|deadlift|push|pull|legs|} %?\n%t")
+        ("c" "Logbook entry" entry (file+datetree+prompt "~/org/k.org")
+         "* kurcic %?" :jump-to-captured nil)))
+
 * Git
 Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
 
