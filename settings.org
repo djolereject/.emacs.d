@@ -464,10 +464,7 @@ Define default place for my agenda
 (setq org-agenda-files (list "~/org/test.org"))
 #+END_SRC
 ** Templates
-*** Helper functions
-List all headings in org buffer.
-
-*** Setting templates
+*** Temp
 #+BEGIN_SRC emacs-lisp
 ;; (setq org-default-notes-file "~/org/vezba.org")
 ;; (setq org-capture-templates '())
@@ -507,13 +504,27 @@ List all headings in org buffer.
 ;; Naslov: %(stari \"Participants\" :dynamic \"[,:]\")
 ;; Neki tekst"))
 #+END_SRC
-*** Old
-(setq org-capture-templates
-      '(("g" "Gym" entry (file+headline "~/org/gym.org" "Training")
-         "* %^{prompt|undefined|bench|squat|press|deadlift|push|pull|legs|} %?\n%t")
-        ("c" "Logbook entry" entry (file+datetree+prompt "~/org/k.org")
-         "* kurcic %?" :jump-to-captured nil)))
+**** Autocomplete functions
+Helper functions to autocomplete headings in capture files.
+#+BEGIN_SRC emacs-lisp
+(defun org-heading-list (buffer level)
+  "Send org buffer and level from which you want list of headings. Returns list of strings."
+  (with-current-buffer buffer (mapcar (lambda (x) (elt x 4)) 
+				      (seq-filter (lambda (x) (= (nth 0 x) level)) (org-map-entries '(org-heading-components))))))
+(defun org-autocomplete (prefix level)
+  (let* ((buffer (if (equal (buffer-name) "*Capture*")
+                     (org-capture-get :buffer)
+                   (current-buffer))))
+    (completing-read (concat prefix ": ") (org-heading-list buffer level))))
+#+END_SRC
+**** List of templates
 
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      '(("g" "Gym" entry (file+olp+datetree "~/org/gym.org") "* \
+%(org-autocomplete \"vezba\" 4)" 
+	 :time-prompt t :tree-type week)))
+#+END_SRC
 * Git
 Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
 
