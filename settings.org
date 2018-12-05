@@ -504,26 +504,43 @@ Define default place for my agenda
 ;; Naslov: %(stari \"Participants\" :dynamic \"[,:]\")
 ;; Neki tekst"))
 #+END_SRC
-**** Autocomplete functions
+*** Autocomplete functions
 Helper functions to autocomplete headings in capture files.
 #+BEGIN_SRC emacs-lisp
 (defun org-heading-list (buffer level)
   "Send org buffer and level from which you want list of headings. Returns list of strings."
-  (with-current-buffer buffer (mapcar (lambda (x) (elt x 4)) 
-				      (seq-filter (lambda (x) (= (nth 0 x) level)) (org-map-entries '(org-heading-components))))))
+  (with-current-buffer buffer
+    (mapcar (lambda (x) (elt x 4)) 
+	    (seq-filter (lambda (x) (= (nth 0 x) level)) (org-map-entries '(org-heading-components))))))
+(defun active-capture-buffer ()
+  (if (equal (buffer-name) "*Capture*")
+      (org-capture-get :buffer)
+    (current-buffer)))
 (defun org-autocomplete (prefix level)
-  (let* ((buffer (if (equal (buffer-name) "*Capture*")
-                     (org-capture-get :buffer)
-                   (current-buffer))))
-    (completing-read (concat prefix ": ") (org-heading-list buffer level))))
+  (org-completing-read-no-i (concat prefix ": ") (org-heading-list (active-capture-buffer) level)))
 #+END_SRC
-**** List of templates
-
+*** Training related captures
 #+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      '(("g" "Gym" entry (file+olp+datetree "~/org/gym.org") "* \
-%(org-autocomplete \"vezba\" 4)" 
-	 :time-prompt t :tree-type week)))
+(setq org-training-file "~/org/training.org")
+(setq org-capture-templates '())
+
+(add-to-list 'org-capture-templates '("g" "Gym Session" entry (file+olp+datetree org-training-file) "* %(org-autocomplete \"theme\" 4)" :time-prompt t :tree-type week))
+(defun goto-last-heading ()
+  (interactive)
+  (org-end-of-subtree))
+
+(defun org-kraj ()
+  (interactive)
+  (let ((org-special-ctrl-a/e t))
+    (if (condition-case nil
+            (outline-forward-same-level 1)
+          (error t))
+        (progn
+          (goto-char (point-max))
+          (outline-back-to-heading))
+      (outline-previous-visible-heading 1))
+    (org-end-of-line 1)))
+(add-to-list 'org-capture-templates '("e" "Exercise" entry (file+function org-training-file org-kraj) "* kurcic"))
 #+END_SRC
 * Git
 Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
