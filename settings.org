@@ -167,7 +167,7 @@ Show current row and column at the bottom of the buffer. This is helpful in most
 Only case known to me where you would want unwrapped text is parsing binary files. It's better to override behavior for those purposes, then to scroll left-right through buffer in all other scenarios.
 
 #+BEGIN_SRC emacs-lisp
-(global-visual-line-mode 1)
+(global-visual-line-mode t)
 #+END_SRC
 *** Double space sentences
 American typist's convention for end of the sentence can cause trouble in some modes. If you need it just turn on ~M-x repunctuate-sentences~.
@@ -341,10 +341,6 @@ Picking theme is personal for everybody so if you don't like my choice, explore 
   ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale 
 #+END_SRC
 * Org Mode
-Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
-
-!!! TODO: enhance this section with templates and captures.
-
 ** General Layout
 *** Indentation
 Indent everything to the level of it's title, but skip further indentation of code.
@@ -360,8 +356,7 @@ Add some colors to code using native mode for given language.
 (setq org-src-fontify-natively t)
 #+END_SRC
 *** Code confirmation
-I never accidentally type ~C-c C-c~ so there is no need for confirmation.
-
+g never accidentally type ~C-c C-c~ so there is no need for confirmation.
 #+BEGIN_SRC emacs-lisp
 (setq org-confirm-babel-evaluate nil)
 #+END_SRC
@@ -464,84 +459,40 @@ Define default place for my agenda
 (setq org-agenda-files (list "~/org/test.org"))
 #+END_SRC
 ** Templates
-*** Temp
-#+BEGIN_SRC emacs-lisp
-;; (setq org-default-notes-file "~/org/vezba.org")
-;; (setq org-capture-templates '())
-;; (add-to-list 'org-capture-templates '("a" "VEZBA" entry (file+olp+datetree org-default-notes-file) "* \
-;; %(djole/org-capture-read-multiple \"****\" \"vezba\" :dynamic \"[,:]\")
-;; "))
+*** Gym
 
-;;  sets: %^{sets}\t reps: %^{reps}\t weight: %^{weight} kg
-;;    Participants: %(my/org-capture-read-multiple \"Participants\" :dynamic \"[,:]\")
-;; Sets: %^{Sets}  Reps: %^{Reps} Weight: %^{Weight}
-;; %^{prompt|Exercise|Superset}
-;; (setq org-default-notes-file "~/org/journal.org")
-;; (setq org-capture-templates '())
+(defun add-training-template (shortcut title options)
+  (add-to-list 'org-capture-templates
+	       `(,shortcut ,(format "%s Training" title) entry (file+olp+datetree org-training-file)
+			   ,(format "* %%^{Training|%s|%s} :%s:" title (mapconcat 'identity options "|") (downcase title))
+			   :time-prompt t :tree-type week)))
+(defun add-exercise-template (shortcut title pattern)
+  (add-to-list 'org-capture-templates `(,shortcut ,title entry (file+function org-training-file org-gym-last-session)
+						  ,(concat "* %(org-gym-exercises) " pattern))))
 
-;; (defun djole/org-heading-catalogue (buffer level)
-;;   "Send org buffer and level from which you want list of headings. Returns list of strings."
-;;   (mapcar (lambda (x) (elt x 4)) 
-;; 	  (seq-filter (lambda (x) (= (nth 0 x) level)) (org-map-entries '(org-heading-components)))))
-;; (defun djole/org-ac-headings (buffer level)
-;;   (completing-read "Izaberi: " 
-;; 		   (djole/org-heading-catalogue buffer level)))
 
-;; (defun stari (field completion &optional delims)
-;;  (let* ((buffer (if (equal (buffer-name) "*Capture*")
-;;                      (org-capture-get :buffer)
-;;                    (current-buffer)))
-;;          (completion (if (eq completion :dynamic)
-;;                          '("1" "2")
-;;                        completion)))
-;;     (with-current-buffer buffer
-;;       (let ((org-last-tags-completion-table completion)
-;;             org-completion-use-ido)
-;;         (org-completing-read-no-i (format "%s: " field)
-;;                                   #'org-tags-completion-function)))))
 
-;; (add-to-list 'org-capture-templates '("a" "Proba" entry (file+olp+datetree org-default-notes-file) "* \
-;; Naslov: %(stari \"Participants\" :dynamic \"[,:]\")
-;; Neki tekst"))
-#+END_SRC
-*** Autocomplete functions
-Helper functions to autocomplete headings in capture files.
-#+BEGIN_SRC emacs-lisp
-(defun org-heading-list (buffer level)
-  "Send org buffer and level from which you want list of headings. Returns list of strings."
-  (with-current-buffer buffer
-    (mapcar (lambda (x) (elt x 4)) 
-	    (seq-filter (lambda (x) (= (nth 0 x) level)) (org-map-entries '(org-heading-components))))))
-(defun active-capture-buffer ()
-  (if (equal (buffer-name) "*Capture*")
-      (org-capture-get :buffer)
-    (current-buffer)))
-(defun org-autocomplete (prefix level)
-  (org-completing-read-no-i (concat prefix ": ") (org-heading-list (active-capture-buffer) level)))
-#+END_SRC
-*** Training related captures
-#+BEGIN_SRC emacs-lisp
+(add-training-template "g" "Gym" '("Training" "Gym" "5/3/1-Bench" "5/3/1-Squat" "5/3/1-Press" "5/3/1-Deadlift" "Push" "Pull" "Legs"))
+(add-training-template "c" "Cardio" '("Training" "Cardio" "Running" "Bike"))
+(add-exercise-template "e" "Exercise" "\nsets: %^{sets}\t reps: %^{reps}\t weight: %^{weight} kg\n%?")
+
+Treci pokusaj, izgleda dobro 
+
 (setq org-training-file "~/org/training.org")
 (setq org-capture-templates '())
 
-(add-to-list 'org-capture-templates '("g" "Gym Session" entry (file+olp+datetree org-training-file) "* %(org-autocomplete \"theme\" 4)" :time-prompt t :tree-type week))
-(defun goto-last-heading ()
-  (interactive)
-  (org-end-of-subtree))
+(defun add-training-template (shortcut title options)
+  (add-to-list 'org-capture-templates
+	       `(,shortcut ,(format "%s Training" title) entry (file+olp+datetree org-training-file)
+			   ,(format "* %%^{Training|%s|%s} :%s:" title (mapconcat 'identity options "|") (downcase title))
+			   :time-prompt t :tree-type week)))
+(defun add-exercise-template (shortcut title pattern)
+  (add-to-list 'org-capture-templates `(,shortcut ,title entry (file+function org-training-file org-gym-last-session)
+						  ,(concat "* %(org-gym-exercises) " pattern))))
 
-(defun org-kraj ()
-  (interactive)
-  (let ((org-special-ctrl-a/e t))
-    (if (condition-case nil
-            (outline-forward-same-level 1)
-          (error t))
-        (progn
-          (goto-char (point-max))
-          (outline-back-to-heading))
-      (outline-previous-visible-heading 1))
-    (org-end-of-line 1)))
-(add-to-list 'org-capture-templates '("e" "Exercise" entry (file+function org-training-file org-kraj) "* kurcic"))
-#+END_SRC
+
+(add-training-template "t" "Training" '("Gym" "Gym" "5/3/1-Bench" "5/3/1-Squat" "5/3/1-Press" "5/3/1-Deadlift" "Push" "Pull" "Legs"))
+
 * Git
 Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
 
@@ -656,13 +607,25 @@ Don't ask for confirmation of save when compiling
   :config (add-hook 'ruby-mode-hook #'rubocop-mode))
 #+END_SRC
 ** Lisp
+Run whole buffer on easy shortcut.
 #+BEGIN_SRC emacs-lisp
+(define-key emacs-lisp-mode-map (kbd "C-c q") 'eval-buffer)
+#+END_SRC
+
+Smartparens is one possible options for lisp.
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package smartparens
+  :config
+  (show-smartparens-global-mode t)
+  (add-hook 'prog-mode-hook #'turn-on-smartparens-mode))
+#+END_SRC
+
+Another is Paredit.
+#+BEGIN_SRC emacs-lisp
+(use-package paredit
   :ensure t
   :config
-  (setq sp-show-pair-from-inside nil)
-  (require 'smartparens-config)
-  :diminish smartparens-mode)
+  (add-hook 'emacs-lisp-mode-hook #'paredit-mode))
 #+END_SRC
 * Small side packages
 ** Touch typing
@@ -680,6 +643,47 @@ Spare minutes are best spent on practicing some touch typing and I added some pa
 #+BEGIN_SRC emacs-lisp
 (use-package typit :ensure t)
 #+END_SRC
+* Templejti
+   #+BEGIN_SRC emacs-lisp
+   ;; (setq gymorg-file "~/org/training.org")
+   ;; (setq org-capture-templates '())
+   ;; (setq gymorg-training-options '((gym "5/3/1" "PPL" "Conditioning")
+   ;;                                 (cardio "Running" "Bike" "Rowing")
+   ;;                                 (sports "Football" "Archery")))
+
+
+   ;; (add-to-list 'org-capture-templates `("g" "Gym" entry (file+olp+datetree gymorg-file)
+   ;;                                       ,(format "* %%(gymorg--tag-picker '(\"Type of training: \" 5/3/1 PPL Conditioning)) %%?") :time-prompt t :tree-type week))
+
+   ;; (defun gymorg-pick-training ()
+   ;;   (interactive)
+   ;;   (let* ((pick (intern (completing-read "Type of training: " gymorg-training-options nil t)))
+   ;;          (type (completing-read "Activity: " (cdr (assoc pick gymorg-training-options)))))
+   ;;     (format "%s :%s:" type pick)))
+
+
+   ;; (add-to-list 'org-capture-templates `("t" "Training" entry (file+olp+datetree gymorg-file)
+   ;;                                       ,(format "* %%(gymorg-pick-training)%%?") :time-prompt t :tree-type week))
+
+   ;; (defun add-exercise-template (shortcut title tags pattern)
+   ;;   (setq local_tags tags)
+   ;;   (add-to-list 'org-capture-templates `(,shortcut ,title entry (file+function gymorg-file gymorg--last-session)
+   ;;                                                   ,(format "* %%(gymorg--exercises) %%(gymorg--tag-list local_tags)\n%s" pattern))))
+
+   ;; (add-exercise-template "g" "Gym Exercise"
+   ;;                        '(("Equipment: " barbell dumbell ez_bar kettlebell bodyweight machine cable medicine_ball) 
+   ;;                          ("Type: " dropset superset))
+   ;;                        "sets: %^{sets}\t reps: %^{reps}\t weight: %^{weight} kg\n%?")
+
+   ;; (add-to-list 'org-capture-templates '("c" "Cardio Exercise" entry (file+function gymorg-file gymorg--last-session)
+   ;;                                       "distance: %^{distance}\t time: %^{time}\n%?"))
+
+
+
+   #+END_SRC
+   Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
+
+!!! TODO: enhance this section with templates and captures.
 
 
 
