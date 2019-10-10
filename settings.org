@@ -35,8 +35,17 @@ Having only one source repository keeps things simple and I don't need fancy, ra
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;; JUST FOR FUCKING CLOJURE-MODE
+;; TODO: remove this ASAP.
+;; (add-to-list 'package-archives ' ("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 #+END_SRC
+
+I have some local packages that I'm trying out, when I finish creating them, they will go to MELPA and there will be no need for local repo.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/djole/")
+#+END_SRC
+
 ** TLS Setup
 Before installing anything, it's essential to setup TLS certificate because Emacs is not handling that in ideal way. For openssl to work on OSX we need to install ~libressl~, which is easiest to do via [[https://brew.sh/][Homebrew]]: ~brew install libressl~. Other systems may need some other setup or even none (which I believe goes for any popular Linux distro).
 
@@ -459,6 +468,32 @@ Define default place for my agenda
 (setq org-agenda-files (list "~/org/test.org"))
 #+END_SRC
 ** Templates
+*** Baby
+##+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "./djole")
+(setq trainlog-file "~/org/beba1.org") 
+(setq baby-file "~/org/beba2.org") 
+(setq org-capture-templates '()) ;; RESET TEMPLATES
+
+;;(trainlog-create-training-template :glavno '("prva opcija" "druga opcija" "treca opcija"))
+
+(defun djole-cap--create-daily-entry(file keyword title tags)
+  (add-to-list 'org-capture-templates `(,(format "%s%s" (djole-prefix keyword) (djole-prefix title))
+					,(format "%s" title) entry (file+datetree+prompt ,file)
+					,(format "* %s %s%%(djole-cap--force-tag):" title keyword) :time-prompt t ,:tags ,tags)))
+
+;(defun djole-title(input)
+(defun djole-cap-template (file key values)
+  (add-to-list 'org-capture-templates `(,(djole-prefix key)
+					,(substring (capitalize (symbol-name key) 1)))
+  (while values
+    (let ((value (pop values)))
+      (cond ((consp value) (djole-cap--create-daily-entry file key (car value) (cdr value)))
+	    ((stringp value) (djole-cap--create-daily-entry file key value nil))))))
+
+(djole-cap-template baby-file :baby '("prvi" "drugi" "treci"))
+
+##+END_SRC
 *** Gym
 
 (defun add-training-template (shortcut title options)
@@ -626,6 +661,41 @@ Another is Paredit.
   :ensure t
   :config
   (add-hook 'emacs-lisp-mode-hook #'paredit-mode))
+#+END_SRC
+** Clojure
+Install Clojure mode
+#+BEGIN_SRC emacs-lisp
+(use-package clojure-mode
+  :ensure t
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode)))
+  ;; :init
+  ;; (add-hook 'clojure-mode-hook #'yas-minor-mode)         
+  ;; (add-hook 'clojure-mode-hook #'linum-mode)             
+  ;; (add-hook 'clojure-mode-hook #'subword-mode)           
+  ;; (add-hook 'clojure-mode-hook #'smartparens-mode)       
+  ;; (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  ;; (add-hook 'clojure-mode-hook #'eldoc-mode)             
+  ;; (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+#+END_SRC
+
+Install Cider
+#+BEGIN_SRC emacs-lisp
+(use-package cider
+  :ensure t
+  :defer t
+  :init (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  :diminish subword-mode
+  :config
+  (setq nrepl-log-messages t                  
+;;        cider-repl-display-in-current-window t
+    cider-repl-use-clojure-font-lock t    
+	cider-save-file-on-load t
+        cider-prompt-save-file-on-load nil
+        cider-font-lock-dynamically '(macro core function var)
+        nrepl-hide-special-buffers t            
+        cider-overlays-use-font-lock t)         
+  (cider-repl-toggle-pretty-printing))
 #+END_SRC
 * Small side packages
 ** Touch typing
