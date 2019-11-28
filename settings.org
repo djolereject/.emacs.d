@@ -652,6 +652,23 @@ Don't ask for confirmation of save when compiling
   :init (require 'ruby-mode)
   :config (add-hook 'ruby-mode-hook #'rubocop-mode))
 #+END_SRC
+** Markup
+Installing modes for various markup languages.
+
+*** YAML
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :ensure
+  :mode
+  "\\(\\.\\(yaml\\|yml\\)\\)\\'")
+#+END_SRC
+
+*** Markdown
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode :ensure t
+  :init
+  (setq-default markdown-hide-markup t))
+#+END_SRC
 * Small side packages
 ** Touch typing
 Spare minutes are best spent on practicing some touch typing and I added some packages that can be helpful.
