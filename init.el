@@ -15,7 +15,7 @@
 (unless (file-exists-p data-dir) (make-directory data-dir))
 (unless (file-exists-p config-dir) (make-directory config-dir))
 
-;; Use babel to compile all code from settings.org
+;; Use babel to compile all code from README.org
 ;;
 (setq vc-follow-symlinks nil)
-(org-babel-load-file (expand-file-name "settings.org" user-emacs-directory))
+(org-babel-load-file (expand-file-name "README.org" user-emacs-directory))
