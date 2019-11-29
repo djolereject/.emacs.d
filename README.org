@@ -305,25 +305,25 @@ English is not my native language so I need more help than some. I still try to 
   :ensure t)
 #+END_SRC
 ** Meta
-Emacs configuration is job that is never really finished so I have some convenient shortcuts concerning ~settings.org~ file.
+Emacs configuration is job that is never really finished so I have some convenient shortcuts concerning ~README.org~ file.
 *** Open
-Speed dial ~settings.org~ with ~C-c i~.
+Speed dial ~README.org~ with ~C-c i~.
 
 #+BEGIN_SRC emacs-lisp
  (defun djole/find-settings ()
     "Edit settings.org"
     (interactive)
-    (find-file (concat user-emacs-directory "settings.org")))
+    (find-file (concat user-emacs-directory "README.org")))
   (global-set-key (kbd "C-c i") 'djole/find-settings)
 #+END_SRC
 *** Reload
-When we change settings.org, we want it quickly reloaded to observe how changes influenced running Emacs. Shortcut is ~C-c r~.
+When we change README.org, we want it quickly reloaded to observe how changes influenced running Emacs. Shortcut is ~C-c r~.
 
 #+BEGIN_SRC emacs-lisp
 (defun djole/reload-settings ()
-  "Reloads settings.org at runtime"
+  "Reloads README.org at runtime"
   (interactive)
-  (org-babel-load-file (expand-file-name "settings.org" user-emacs-directory)))
+  (org-babel-load-file (expand-file-name "README.org" user-emacs-directory)))
 (global-set-key (kbd "C-c r") 'djole/reload-settings)
 #+END_SRC
 * Theme
