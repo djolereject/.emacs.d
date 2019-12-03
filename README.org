@@ -224,7 +224,7 @@ There are lot of packages that are trying to influence all aspects of working wi
 Another possible route is having just ~ido-mode~ and big number of specialized settings for different scenarios which also tends to become clutter after a while. 
 
 For now, I settled with ~ivy~ which is a little bit more "overall solution" than I'm comfortable with, but it keeps things confined. I might rethink this decision if it gets too much in the way.
-**** Ivy
+*** Ivy
 [[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy]] is improved version of ~ido-mode~ with much more customization options. It removes need for ~ubiquitous~ and ~smex~ and have good overall feel. I just started using it recently but I like what I'm seeing.
 
 #+BEGIN_SRC emacs-lisp
@@ -262,7 +262,7 @@ For now, I settled with ~ivy~ which is a little bit more "overall solution" than
   (ivy-set-actions 'counsel-git-grep
                    '(("j" find-file-other-window "other"))))
 #+END_SRC
-**** Which key
+*** Which key
 [[https://github.com/justbur/emacs-which-key][which-key]] opens popup after entering incomplete command. Delay of one second gives enough time to finish command without seeing it, and if I'm stuck it shows available endings to entered prefix.
 
 #+BEGIN_SRC emacs-lisp
@@ -277,32 +277,6 @@ When file edited in buffer changes from some outside source (say, ~git reset~), 
 
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode t)
-#+END_SRC
-*** Writing and spelling
-English is not my native language so I need more help than some. I still try to keep spellcheck unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial suggestions or is writing more in natural than programming languages.
-
-**** fly-spell
-[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is wrapper for ~fly-spell~ with interface that can easily work with ~ivy~, ~helm~ or simple popup presentation. 
-
-- ~fly-spell~ uses separate program to compare words. ~brew install aspell~ is easy way to do it on Mac but you have to bind it's path manually.
-- Correcting previous word while typing is the most common use-case so it's bound to convenient shortcut: ~C-;~
-
-#+BEGIN_SRC emacs-lisp
-(use-package flyspell-correct-ivy
-  :ensure t
-  :config (progn
-            (when (eq system-type 'darwin)
-              (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-              (setq exec-path (append exec-path '("/usr/local/bin"))))
-            (add-hook 'text-mode-hook 'flyspell-mode)
-            (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic)))
-#+END_SRC
-**** writegood-mode
-[[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is checking for weasel words, passive voice or duplicates in prose.
-
-#+BEGIN_SRC emacs-lisp
-(use-package writegood-mode
-  :ensure t)
 #+END_SRC
 ** Meta
 Emacs configuration is job that is never really finished so I have some convenient shortcuts concerning ~README.org~ file.
@@ -522,25 +496,43 @@ Show line numbers in any programming mode.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook 'linum-mode)
 #+END_SRC
-
-*** Indentation
-Autoindent code (specifics are usually delegated to mode).
-#+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'auto-indent-mode)
-#+END_SRC
-
 *** Camel Case
 Treat CamelCase as separate words while editing.
 
 #+BEGIN_SRC emacs-lisp
-(subword-mode 1)
+(add-hook 'prog-mode-hook 'subword-mode)
 #+END_SRC
 ** Ruby
+First, connect most ruby files with ~ruby-mode~.
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package ruby-mode
+  :ensure t
+  :mode "\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
+  :mode "\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'")
+;; :init (add-hook 'ruby-mode-hook 'robe-mode))
+;; (add-to-list 'auto-mode-alist
+;; 	     '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+;; (add-to-list 'auto-mode-alist
+;; 	     '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+#+END_SRC
+*** Erb
+Use web-mode for erb files.
+
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode
+  :ensure t
+  :mode "\\.erb\\'")
+#+END_SRC
+*** Robe
 Use yard and robe modes with ~ruby-mode~.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'ruby-mode-hook 'yard-mode)
-(add-hook 'ruby-mode-hook 'robe-mode)
+(use-package robe
+  :ensure t
+  :bind ("C-M-." . robe-jump)
+  :init (add-hook 'ruby-mode-hook 'robe-mode))
 #+END_SRC
 *** RSpec
 When rake is available use it.
@@ -568,10 +560,10 @@ Don't ask for confirmation of save when compiling
 *** Rubocop
 [[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
 #+BEGIN_SRC emacs-lisp
-(use-package rubocop
-  :ensure t
-  :init (require 'ruby-mode)
-  :config (add-hook 'ruby-mode-hook #'rubocop-mode))
+;; (use-package rubocop
+;;   :ensure t
+;;   :init (require 'ruby-mode)
+;;   :config (add-hook 'ruby-mode-hook #'rubocop-mode))
 #+END_SRC
 ** Markup
 Installing modes for various markup languages.
@@ -591,6 +583,33 @@ Installing modes for various markup languages.
   (setq-default markdown-hide-markup t))
 #+END_SRC
 * Small side packages
+** Writing and spelling
+English is not my native language so I need more help than some. I still try to keep spellcheck unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial suggestions or is writing more in natural than programming languages.
+
+**** fly-spell
+[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is wrapper for ~fly-spell~ with interface that can easily work with ~ivy~, ~helm~ or simple popup presentation. 
+
+- ~fly-spell~ uses separate program to compare words. ~brew install aspell~ is easy way to do it on Mac but you have to bind it's path manually.
+- Correcting previous word while typing is the most common use-case so it's bound to convenient shortcut: ~C-;~
+
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell-correct-ivy
+  :ensure t
+  :config (progn
+            (when (eq system-type 'darwin)
+              (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+              (setq exec-path (append exec-path '("/usr/local/bin"))))
+            (add-hook 'text-mode-hook 'flyspell-mode)
+            (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-previous-word-generic)))
+#+END_SRC
+**** writegood-mode
+[[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is checking for weasel words, passive voice or duplicates in prose.
+
+#+BEGIN_SRC emacs-lisp
+(use-package writegood-mode
+  :ensure t
+  :init (global-set-key (kbd "C-c q") 'writegood-mode))
+#+END_SRC
 ** Touch typing
 Spare minutes are best spent on practicing some touch typing and I added some packages that can be helpful.
 
