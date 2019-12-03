@@ -506,33 +506,37 @@ Treat CamelCase as separate words while editing.
 First, connect most ruby files with ~ruby-mode~.
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package ruby-mode
   :ensure t
   :mode "\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
   :mode "\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'")
-;; :init (add-hook 'ruby-mode-hook 'robe-mode))
-;; (add-to-list 'auto-mode-alist
-;; 	     '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
-;; (add-to-list 'auto-mode-alist
-;; 	     '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 #+END_SRC
-*** Erb
-Use web-mode for erb files.
+*** REPL
+Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur/inf-ruby/][inf-ruby]].
 
 #+BEGIN_SRC emacs-lisp
-(use-package web-mode
+(use-package inf-ruby
   :ensure t
-  :mode "\\.erb\\'")
+  :init (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode))
 #+END_SRC
-*** Robe
-Use yard and robe modes with ~ruby-mode~.
+
+Use [[https://github.com/dgutov/robe][Robe]] with ~ruby-mode~ to attach to ~inf-ruby~ subprocess and show some info about the methods.
 
 #+BEGIN_SRC emacs-lisp
 (use-package robe
   :ensure t
   :bind ("C-M-." . robe-jump)
   :init (add-hook 'ruby-mode-hook 'robe-mode))
+#+END_SRC
+*** Ruby Tools
+[[https://github.com/rejeep/ruby-tools.el][Ruby tools]] brings few refactoring options. I'm still not sure is it worth to include separate package but I'm trying it out.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ruby-tools
+  :ensure t
+  :init
+  (add-hook 'ruby-mode-hook 'ruby-tools-mode)
+  :diminish ruby-tools-mode)
 #+END_SRC
 *** RSpec
 When rake is available use it.
@@ -560,10 +564,17 @@ Don't ask for confirmation of save when compiling
 *** Rubocop
 [[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
 #+BEGIN_SRC emacs-lisp
-;; (use-package rubocop
-;;   :ensure t
-;;   :init (require 'ruby-mode)
-;;   :config (add-hook 'ruby-mode-hook #'rubocop-mode))
+(use-package rubocop
+  :ensure t
+  :init (add-hook 'ruby-mode-hook 'rubocop-mode))
+#+END_SRC
+** Web
+Use ~web-mode~ for erb files.
+
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode
+  :ensure t
+  :mode "\\.erb\\'")
 #+END_SRC
 ** Markup
 Installing modes for various markup languages.
