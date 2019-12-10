@@ -568,6 +568,14 @@ Don't ask for confirmation of save when compiling
   :ensure t
   :init (add-hook 'ruby-mode-hook 'rubocop-mode))
 #+END_SRC
+*** Rails
+Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.com/asok/projectile-rails][projectile-rails]] helps navigating Rails projects.
+
+#+BEGIN_SRC emacs-lisp
+(use-package projectile-rails
+  :ensure t
+  :config (projectile-rails-global-mode))
+#+END_SRC
 ** Web
 Use ~web-mode~ for erb files.
 
