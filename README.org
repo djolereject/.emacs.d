@@ -191,7 +191,7 @@ Interesting and efficient way of dealing with undo in Emacs. Takes some time to 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
   :ensure t
-  :init (global-undo-tree-mode))
+  :config (global-undo-tree-mode))
 #+END_SRC
 *** Whitespaces
 Really simple package, but I find it incredibly useful. Replaces rows of whitespaces with just one or deletes single whitespace. Shortcut is ~M-Space~.
@@ -502,8 +502,16 @@ Treat CamelCase as separate words while editing.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook 'subword-mode)
 #+END_SRC
+*** Company
+"Complete Anything" or [[http://company-mode.github.io/][company]] is used to complete text at point of typing. Make it global and let other packages add appropriate backends.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :config (global-company-mode t))
+#+END_SRC
 ** Ruby
-First, connect most ruby files with ~ruby-mode~.
+Ensure ~ruby-mode~ is major mode for all ruby-related files.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-mode
@@ -511,8 +519,9 @@ First, connect most ruby files with ~ruby-mode~.
   :mode "\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
   :mode "\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'")
 #+END_SRC
+
 *** REPL
-Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur/inf-ruby/][inf-ruby]].
+Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur/inf-ruby/][inf-ruby]], make it available for all ruby files.
 
 #+BEGIN_SRC emacs-lisp
 (use-package inf-ruby
@@ -520,23 +529,22 @@ Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur
   :init (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode))
 #+END_SRC
 
-Use [[https://github.com/dgutov/robe][Robe]] with ~ruby-mode~ to attach to ~inf-ruby~ subprocess and show some info about the methods.
+Use [[https://github.com/dgutov/robe][Robe]] with ~ruby-mode~, attach it to ~inf-ruby~ subprocess to show info about loaded methods. After configuring robe and company, add company-robe to the list of its backends.
 
 #+BEGIN_SRC emacs-lisp
 (use-package robe
   :ensure t
   :bind ("C-M-." . robe-jump)
-  :init (add-hook 'ruby-mode-hook 'robe-mode))
+  :init (add-hook 'ruby-mode-hook 'robe-mode)
+  :config (eval-after-load 'company '(push 'company-robe company-backends)))
 #+END_SRC
-*** Ruby Tools
+*** Refactoring
 [[https://github.com/rejeep/ruby-tools.el][Ruby tools]] brings few refactoring options. I'm still not sure is it worth to include separate package but I'm trying it out.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-tools
   :ensure t
-  :init
-  (add-hook 'ruby-mode-hook 'ruby-tools-mode)
-  :diminish ruby-tools-mode)
+  :init (add-hook 'ruby-mode-hook 'ruby-tools-mode))
 #+END_SRC
 *** RSpec
 When rake is available use it.
