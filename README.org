@@ -359,8 +359,7 @@ Present symbols as intended (pi -> \pi{}).
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :ensure t
-  :config
-  (add-hook 'org-mode-hook 'org-bullets-mode))
+  :config (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 ** Bindings
 While trying to be as close to defaults as possible, I still have some preferences when it comes to binding keys in ~org-mode~.
@@ -421,6 +420,7 @@ TODO: Needs more exporting options!
   :after (org)
   :ensure t)
 #+END_SRC
+
 ** Agenda
 *** Global Shortcuts
 #+BEGIN_SRC emacs-lisp
