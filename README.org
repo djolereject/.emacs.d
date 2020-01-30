@@ -574,6 +574,17 @@ Don't ask for confirmation of save when compiling
 #+BEGIN_SRC emacs-lisp
 (setq compilation-ask-about-save nil)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package rspec-mode
+  :ensure t
+  :config
+  (define-key rspec-mode-map (kbd "C-q a") 'rspec-verify-all)
+  (define-key rspec-mode-map (kbd "C-q b") 'rspec-verify-matching)
+  (define-key rspec-mode-map (kbd "C-q q") 'rspec-verify-single)
+  (define-key rspec-mode-map (kbd "C-c C-c") 'rspec-verify-single)
+  (define-key rspec-mode-map (kbd "C-q f") 'rspec-run-last-failed))
+#+END_SRC
 *** Rubocop
 [[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
 #+BEGIN_SRC emacs-lisp
