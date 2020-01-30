@@ -606,8 +606,35 @@ Use ~web-mode~ for erb files.
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :ensure t
-  :mode "\\.erb\\'")
+  :mode ("\\.erb\\'" ".html?\\'" ".s?css\\'" ".sass\\'")
+  :config (setq web-mode-markup-indent-offset 2))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package eredis
+  :ensure t)
+#+END_SRC
+
+I tried js2 mode, but for now I think I will stick with rjsx.
+#+BEGIN_SRC emacs-lisp
+(use-package rjsx-mode
+  :ensure t
+  :mode ("\\.jsx\\'" ".js\\'")
+  :config (progn
+	    (setq js-indent-level 2
+		  js2-strict-missing-semi-warning t)
+	    (define-key rjsx-mode-map "<" nil)
+	    (define-key rjsx-mode-map (kbd "C-d") nil)
+	    (define-key rjsx-mode-map ">" nil)))
+#+END_SRC
+
+For slim files:
+#+BEGIN_SRC emacs-lisp
+(use-package slim-mode
+  :ensure t
+  :mode ("\\.slim\\'"))
+#+END_SRC
+
 ** Markup
 Installing modes for various markup languages.
 
