@@ -700,8 +700,10 @@ Spare minutes are best spent on practicing some touch typing and I added some pa
 #+BEGIN_SRC emacs-lisp
 (use-package typit :ensure t)
 #+END_SRC
+** Search 
+It's possible to search Stack Overflow from Emacs with one simple command. Results are stored in org buffer which makes it super-convenient.
 
-
-
-
-
+#+BEGIN_SRC emacs-lisp
+(use-package sos
+  :ensure t)
+#+END_SRC
