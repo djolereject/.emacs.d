@@ -512,6 +512,11 @@ Treat CamelCase as separate words while editing.
   :ensure t
   :config (global-company-mode t))
 #+END_SRC
+*** Newline
+#+BEGIN_SRC emacs-lisp
+(setq require-final-newline nil)
+(setq mode-require-final-newline nil)
+#+END_SRC
 ** Ruby
 Ensure ~ruby-mode~ is major mode for all ruby-related files.
 
