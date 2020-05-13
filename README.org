@@ -657,6 +657,15 @@ Use separate mode for slim files, I'm still not happy with this one but can't fi
   :mode ("\\.slim\\'"))
 #+END_SRC
 
+[[https://github.com/pashky/restclient.el][Restclient]] is used in place of Postman or Insomnia. Versatile package, but it takes some practice to get used to it.
+
+#+BEGIN_SRC emacs-lisp
+(use-package restclient
+    :ensure t
+    :mode (("\\.http\\'" . restclient-mode))
+    :bind (:map restclient-mode-map
+                ("C-c C-f" . json-mode-beautify)))
+#+END_SRC
 ** Markup
 Installing modes for various markup languages.
 
