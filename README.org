@@ -6,9 +6,9 @@
 * About
 Last Emacs bankruptcy forced me to try a different route - put everything in org file and have it documented, explained and never stale.
 
-Explanations combined with code in one file is effectuating old paradigm of [[https://github.com/limist/literate-programming-examples][Literate Programming]], which might have it's flaws but lisp configuration file is exactly where it shines. I will try not to underestimate "Literate" part of this concept and give thorough explanations for every line of code along with guiding principles for bigger sections.
+Explanations combined with code in one file is effectuating old paradigm of [[https://github.com/limist/literate-programming-examples][Literate Programming]], which might have its flaws but lisp configuration file is exactly where it shines. I will try not to underestimate "Literate" part of this concept and give thorough explanations for every line of code along with guiding principles for bigger sections.
 
-This is obviously opinionated setup, being my actual working ~init~, but I made some effort making parts of it separate and possible to apply or exclude on it's own. Reminding future me on what the hell I was thinking when I included something is part of the reason I'm writing this, but I also hope it can be of help to someone trying to learn how Emacs initialization works. I had tremendous help from other people's init directories and I hope detailed instructions presented here could help someone in similar fashion.
+This is obviously opinionated setup, being my actual working ~init~, but I made some effort making it modular so it's possible to pick any part of it separately. Reminding future me on what the hell I was thinking when I included something is part of the reason I'm writing this, but I also hope it can be of help to someone trying to learn how Emacs initialization works. I had tremendous help from other people's init directories and I hope detailed instructions presented here could help someone in similar fashion.
 
 For somebody who is starting his journey with Emacs, this repository can serve as a starting point for personal setup. Just copying it will leave you with nice looking and reasonable settings. I have a tendency for minimalism so this should be easy to build upon. Similarly, separation of code blocks makes it trivial to remove parts that are of no interest in someone else's workflow.
 
@@ -18,31 +18,31 @@ If you find something achievable in simpler or more efficient way, please feel f
 *** README.org
 This is where the magic happens... [[https://org-babel.readthedocs.io/en/latest/][Babel]] extracts code from this file copying it to self-created ~config/settings.el~ which Emacs uses for initialization. Using that extracted code ~Custom~ creates ~config/custom.el~ and lists packages mentioned, preparing them for download and installation.
 
-- Source of all packages is [[https://stable.melpa.org/][MELPA Stable]], which might not be enough for somebody who wants newest and shiniest toys. You can replace package source with [[https://melpa.org/packages][MELPA]] or [[http://marmalade-repo.org/packages/][Marmelade]], just be aware that they both have their problems and never rely 100% on having the source available at all times. Emacs package sources are still evolving ecosystem and everything relies on your specific needs, but ~melpa-stable~ should suffice to most. 
+- Source of all packages is [[https://melpa.org/packages][MELPA]], after I found out that [[https://stable.melpa.org/][MELPA Stable]] is not superior in any way. Emacs package sources are still evolving ecosystem and everything relies on your specific needs, but ~MELPA~ seem to be best choice for now.
 - Strategy used for installation is [[https://github.com/jwiegley/use-package][use-package]], which to me looks superior to all other techniques (and I tried them all). Possibility to require and define package in the same place where you are setting its behavior does wonders for readability. Some packages might make you jump through hoops if you try to install them this way, but it's worth it.
 *** init.el
 In ~init~ we have to set some things beforehand so ~settings~ can run consistently between reboots and there is no clutter created in Emacs root directory.
 - ~(package-initialize)~ is there just because ~Custom~ would put it there anyway being the starting file of initialization.
-- ~config-dir~ and ~data-dir~ are names of directories that we want for variables in ~no-littering~ package. When I started using ~no-littering~ it became obvious that some other transient files should have their place in those directories too so I put their creation in pre-processing stage.
+- ~config-dir~ and ~data-dir~ are names of directories that ~no-littering~ package uses for storing transient files which need to be created in the pre-processing stage.
 * Prerequisites
-Before we go on with installing packages it's essential to configure some things. Everything in this section concerns initializing ~set-package~ and making sure we don't create clutter in install directory.
+Before we go on with installing packages it's essential to configure some things. Everything in this section concerns initializing ~set-package~ and making sure we don't create clutter in the init directory.
 ** Sources
-Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. If that need arises I can always download it locally and set local source for ~use-package~, making it even more secure.
+Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. I used to go with ~melpa-stable~, but since that time I learned that there is no advantage presumed with "stable" postfix in the name. I can always download packages and set local source for ~use-package~, making it even more secure if that becomes important.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 #+END_SRC
 ** TLS Setup
-Before installing anything, it's essential to setup TLS certificate because Emacs is not handling that in ideal way. For openssl to work on OSX we need to install ~libressl~, which is easiest to do via [[https://brew.sh/][Homebrew]]: ~brew install libressl~. Other systems may need some other setup or even none (which I believe goes for any popular Linux distro).
+Before installing anything, it's essential to setup TLS certificate because Emacs is not handling that in ideal way. For openssl to work on OSX we need to install ~libressl~, which is easiest to do via [[https://brew.sh/][Homebrew]]: ~brew install libressl~. Popular Linux distros have this predefined so there is no need for any setup and for other systems you should easily find equivalent ssl libraries.
 
 #+BEGIN_SRC emacs-lisp
 (require 'gnutls)
 (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
 #+END_SRC
 ** use-package
-I already explained why I like ~use-package~, so I won't go further with reasons it's my preferred installer. This setup could obviously work with some other macro, but I'm not sure if some discrepancies could arise.
+I already explained why I like ~use-package~ as my preferred installer. This setup could obviously work with some other macro, but discrepancies are probable.
 
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -52,7 +52,7 @@ I already explained why I like ~use-package~, so I won't go further with reasons
   (require 'use-package))
 #+END_SRC
 ** no-littering
-[[https://github.com/emacscollective/no-littering][no-littering]] package is the first we are going to install. It's job is to make sub-directories in ~.init.d~ and save all temporary files there. This reduces clutter and helps with having one place to look in case of something missing.
+[[https://github.com/emacscollective/no-littering][no-littering]] package is the first we are going to install. It's job is to make sub-directories in ~.init.d~ and save all temporary files there. This reduces clutter and helps with having one place to look in case that something is missing.
 - ~/config~ is for auto generated files that would end up cluttering ~init.el~. Process of installation creates ~settings.el~ and ~custom.el~ files, but any package that needs configuration files should use this directory to save them.
 - ~/data~ serves as temporary directory for all packages. This is place for ~auto-save~ and ~backup~, along with any other package that needs to save some transient data.
 
@@ -76,7 +76,7 @@ I already explained why I like ~use-package~, so I won't go further with reasons
                         (load custom-file)))))
 #+END_SRC
 ** Suppress warnings
-Some packages are sending unnecessary warnings while installed through ~use-package~ and it's bothering me, so this is just for my OCD. Default value for this variable is ~:warning~ and I boosted it up to ~:error~.
+Some packages are sending unnecessary warnings while installed through ~use-package~ and it's bothering me, so this is just for quieter experience with installation. Default value for this variable is ~:warning~ and I boosted it up to ~:error~.
 
 #+BEGIN_SRC emacs-lisp
 (setq warning-minimum-level :error)
@@ -105,7 +105,7 @@ Opening files with unknown extension is best to start in ~text-mode~ and specify
 #+END_SRC
 ** Remove unwanted
 *** Decorations
-If you use your Emacs without mouse, toolbar and scrollbar are just wastes of screen space. If you are not there yet, you will be in time.
+If you use Emacs without mouse there is not much need for toolbar and scrollbar.
 
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode 0)
@@ -202,7 +202,7 @@ Really simple package, but I find it incredibly useful. Replaces rows of whitesp
   :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
 #+END_SRC
 ** OS-specific
-For now, I only customized things related to OSX because that's the system I'm spending most of my time in. I plan to do fine tuning for few popular distros, mainly Ubuntu.
+For now, I only customized things related to OSX because that's the system I'm spending most of my time in. I plan to do fine tuning for Ubuntu also.
 
 *** OSX
 - Bound ~Control~ to ~Caps-Lock~ key system-wide, not inside Emacs. This is something I encourage everybody to try.
@@ -219,7 +219,7 @@ For now, I only customized things related to OSX because that's the system I'm s
   (setq mac-right-command-modifier 'control))
 #+END_SRC
 ** Minibuffer
-There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time catching it's quirks around some other big packages. 
+There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time chasing it's quirks around some other big packages. 
 
 Another possible route is having just ~ido-mode~ and big number of specialized settings for different scenarios which also tends to become clutter after a while. 
 
@@ -257,8 +257,8 @@ For now, I settled with ~ivy~ which is a little bit more "overall solution" than
          ("C-x p" . counsel-list-processes))
   :config
   (ivy-set-actions
-           'counsel-find-file
-           '(("j" find-file-other-window "other")))
+   'counsel-find-file
+   '(("j" find-file-other-window "other")))
   (ivy-set-actions 'counsel-git-grep
                    '(("j" find-file-other-window "other"))))
 #+END_SRC
@@ -303,13 +303,13 @@ When we change README.org, we want it quickly reloaded to observe how changes in
 (global-set-key (kbd "C-c r") 'djole/reload-settings)
 #+END_SRC
 * Theme
-Picking theme is personal for everybody so if you don't like my choice, explore some resources out there and pick one that suits you. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
+Picking theme is personal for everybody so if you don't like my choice explore some resources out there and pick one that suits you. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
 
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
     :ensure t
     :if window-system
-    :config (load-theme 'base16-apathy t))
+    :config (load-theme 'base16-oceanicnext t))
   ;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
   ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale 
 #+END_SRC
@@ -320,14 +320,14 @@ Customizing one of the biggest and most popular packages for Emacs could be infi
 
 ** General Layout
 *** Indentation
-Indent everything to the level of it's title, but skip further indentation of code.
+Indent everything to the level of its title, but skip further indentation of code.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
 (setq org-edit-src-content-indentation 0)
 #+END_SRC
 *** Code highlights
-Add some colors to code using native mode for given language.
+Add some colors to the code using native mode for given language.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
@@ -388,7 +388,7 @@ Standard insert is done via ~<s + TAB~, and I mostly need emacs-lisp, so I made 
 	       '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
 #+END_SRC
 ** Appearance
-Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
+Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's a matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (let*
@@ -413,7 +413,7 @@ Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and
                             `(org-document-title ((t (,@headline ,@variable-tuple :height 1.33 :underline nil))))))
 #+END_SRC
 ** Exporters
-I tried with ~pandoc-mode~ but it looks too intrusive, and ~ox-pandoc~ has some problems installing from ~melpa-stable~. Exporting to markdown is only thing I need for now so I will return to this section when exporting to PDF or latex calls for more.
+I tried with ~pandoc-mode~ but it looks too intrusive, and ~ox-pandoc~ has some problems installing from ~melpa-stable~. Exporting to markdown is the only thing I need for now so I will return to this section when exporting to PDF or latex calls for more.
 
 TODO: Needs more exporting options!
 
@@ -457,6 +457,8 @@ I'm not a fan of frequent confirmations for common tasks, so staging all files i
 
 I find ~M-g~ to be good prefix for ~git-gutter~ commands but use whatever works for you.
 
+TODO: Make sure that git gutter actually fits into my workflow and remove it if it doesn't
+
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
   :ensure t
@@ -481,7 +483,16 @@ I find ~M-g~ to be good prefix for ~git-gutter~ commands but use whatever works 
 [[https://github.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents it in obvious way.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package git-timemachine :ensure t)
+  (use-package git-timemachine
+    :ensure t)
+#+END_SRC
+** Git Forge
+[[https://github.com/magit/forge][Forge]] is package used in conjunction with Magit and primarily used for connection with Github, Gitlab or similar remotes (forges).
+
+#+BEGIN_SRC emacs-lisp
+(use-package forge
+  :ensure t
+  :after magit)
 #+END_SRC
 ** Ediff
 I like ~ediff~ more than ~smerge~, but that's probably just a personal preference. Give it a try.
@@ -551,6 +562,8 @@ Use [[https://github.com/dgutov/robe][Robe]] with ~ruby-mode~, attach it to ~inf
 *** Refactoring
 [[https://github.com/rejeep/ruby-tools.el][Ruby tools]] brings few refactoring options. I'm still not sure is it worth to include separate package but I'm trying it out.
 
+TODO: Make sure that I'm using Ruby tools or remove it
+
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-tools
   :ensure t
@@ -606,7 +619,7 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
   :config (projectile-rails-global-mode))
 #+END_SRC
 ** Web
-Use ~web-mode~ for erb files.
+Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
 
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
@@ -615,12 +628,15 @@ Use ~web-mode~ for erb files.
   :config (setq web-mode-markup-indent-offset 2))
 #+END_SRC
 
+Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis server.
+
 #+BEGIN_SRC emacs-lisp
 (use-package eredis
   :ensure t)
 #+END_SRC
 
 I tried js2 mode, but for now I think I will stick with rjsx.
+
 #+BEGIN_SRC emacs-lisp
 (use-package rjsx-mode
   :ensure t
@@ -633,7 +649,8 @@ I tried js2 mode, but for now I think I will stick with rjsx.
 	    (define-key rjsx-mode-map ">" nil)))
 #+END_SRC
 
-For slim files:
+Use separate mode for slim files, I'm still not happy with this one but can't find anything better.
+
 #+BEGIN_SRC emacs-lisp
 (use-package slim-mode
   :ensure t
@@ -692,16 +709,20 @@ Spare minutes are best spent on practicing some touch typing and I added some pa
 [[https://github.com/hagleitn/speed-type][speed-type]] takes practicing examples on random which sometimes can be demanding with exotic examples that it puts in front of you.
 
 #+BEGIN_SRC emacs-lisp
-(use-package speed-type :ensure t)
+(use-package speed-type
+  :ensure t)
 #+END_SRC
 *** typit
 [[https://github.com/mrkkrp/typit][typit]] is convenient for building speed on common words.
 
 #+BEGIN_SRC emacs-lisp
-(use-package typit :ensure t)
+(use-package typit
+  :ensure t)
 #+END_SRC
 ** Search 
 It's possible to search Stack Overflow from Emacs with one simple command. Results are stored in org buffer which makes it super-convenient.
+
+TODO: See if I ever use this and remove if not.
 
 #+BEGIN_SRC emacs-lisp
 (use-package sos
