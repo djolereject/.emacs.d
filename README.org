@@ -673,15 +673,21 @@ Installing modes for various markup languages.
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
   :ensure
-  :mode
-  "\\(\\.\\(yaml\\|yml\\)\\)\\'")
+  :mode "\\(\\.\\(yaml\\|yml\\)\\)\\'")
 #+END_SRC
 
 *** Markdown
 #+BEGIN_SRC emacs-lisp
-(use-package markdown-mode :ensure t
-  :init
-  (setq-default markdown-hide-markup t))
+(use-package markdown-mode 
+  :ensure t
+  :init (setq-default markdown-hide-markup t))
+#+END_SRC
+
+*** JSON
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+    :ensure t)
+#+END_SRC
 #+END_SRC
 * Small side packages
 ** Writing and spelling
