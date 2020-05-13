@@ -688,6 +688,27 @@ Installing modes for various markup languages.
 (use-package json-mode
     :ensure t)
 #+END_SRC
+* Zettelkasten
+TODO: Explain zettelkasten basics.
+
+Zetteldeft relies on [[https://jblevins.org/projects/deft][deft]], package that improves working with large number of small files.
+
+#+BEGIN_SRC emacs-lisp
+(use-package deft
+  :ensure t
+  :custom
+    (deft-extensions '("org" "md" "txt"))
+    (deft-directory "~/org/zettelkasten/")
+    (deft-use-filename-as-title t))
+#+END_SRC
+
+[[https://github.com/EFLS/zetteldeft][Zetteldeft]] looks like the most advanced package for Zettelkasten on Emacs.
+
+#+BEGIN_SRC emacs-lisp
+(use-package zetteldeft
+  :ensure t
+  :after deft
+  :config (zetteldeft-set-classic-keybindings))
 #+END_SRC
 * Small side packages
 ** Writing and spelling
