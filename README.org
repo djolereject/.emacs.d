@@ -708,7 +708,7 @@ English is not my native language so I need more help than some. I still try to 
               (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
               (setq exec-path (append exec-path '("/usr/local/bin"))))
             (add-hook 'text-mode-hook 'flyspell-mode)
-            (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-previous-word-generic)))
+            (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-previous)))
 #+END_SRC
 **** writegood-mode
 [[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is checking for weasel words, passive voice or duplicates in prose.
