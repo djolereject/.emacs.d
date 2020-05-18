@@ -3,7 +3,8 @@
 
 ;; Package.el
 ;;
-(package-initialize)
+(if (version< emacs-version "27")
+    (package-initialize))
 
 ;; Preload config and data for other packages
 ;;
@@ -15,7 +16,11 @@
 (unless (file-exists-p data-dir) (make-directory data-dir))
 (unless (file-exists-p config-dir) (make-directory config-dir))
 
-;; Use babel to compile all code from README.org
+;; `org-babel-load-file` doesn't work anymore when destination file is different that original with .el extension, something changed with Emasc 27 or org.
+;; `org-babel-tangle-file` and `load-file` are replacing that function.
 ;;
-(setq vc-follow-symlinks nil)
-(org-babel-load-file (expand-file-name "README.org" user-emacs-directory))
+(require 'org)
+(let ((source (expand-file-name "README.org" user-emacs-directory))
+      (target (expand-file-name "settings.el" config-dir)))
+  (org-babel-tangle-file source target)
+  (load-file target))

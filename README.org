@@ -1,7 +1,7 @@
 #+TITLE: Djole's Emacs Config
 #+AUTHOR: Djordje Knezevic
 #+EMAIL: djolereject@gmail.com
-#+PROPERTY: header-args :results silent :tangle (expand-file-name "settings.el" config-dir)
+#+PROPERTY: header-args :results silent
 
 * About
 Last Emacs bankruptcy forced me to try a different route - put everything in org file and have it documented, explained and never stale.
