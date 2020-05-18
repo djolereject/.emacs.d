@@ -51,6 +51,17 @@ I already explained why I like ~use-package~ as my preferred installer. This set
 (eval-when-compile
   (require 'use-package))
 #+END_SRC
+
+Now we can use ~use-package~ for ~use-package~!
+
+#+BEGIN_SRC emacs-lisp
+(use-package use-package
+  :init
+  (setq use-package-always-ensure t)	; Try installing automatically
+  (setq use-package-verbose nil)		; Set to true when interested in load times
+  (use-package use-package-ensure-system-package :ensure t)) ; Need this because we are in use-package config
+#+END_SRC
+
 ** no-littering
 [[https://github.com/emacscollective/no-littering][no-littering]] package is the first we are going to install. It's job is to make sub-directories in ~.init.d~ and save all temporary files there. This reduces clutter and helps with having one place to look in case that something is missing.
 - ~/config~ is for auto generated files that would end up cluttering ~init.el~. Process of installation creates ~settings.el~ and ~custom.el~ files, but any package that needs configuration files should use this directory to save them.
@@ -58,7 +69,6 @@ I already explained why I like ~use-package~ as my preferred installer. This set
 
 #+BEGIN_SRC emacs-lisp
   (use-package no-littering
-    :ensure t
     :init (progn
             (setq no-littering-etc-directory config-dir)
             (setq no-littering-var-directory data-dir)
@@ -79,6 +89,10 @@ I already explained why I like ~use-package~ as my preferred installer. This set
 Some packages are sending unnecessary warnings while installed through ~use-package~ and it's bothering me, so this is just for quieter experience with installation. Default value for this variable is ~:warning~ and I boosted it up to ~:error~.
 
 #+BEGIN_SRC emacs-lisp
+(setq byte-compile-warnings '(cl-functions))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq warning-minimum-level :error)
 #+END_SRC
 * General Settings
@@ -143,7 +157,6 @@ It's possible to just use ~other-window~ command and add some keybindings to it,
 
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
-  :ensure t
   :config (progn
             (global-set-key (kbd "M-o") 'ace-window)
             (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
@@ -190,7 +203,6 @@ Interesting and efficient way of dealing with undo in Emacs. Takes some time to 
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
-  :ensure t
   :config (global-undo-tree-mode))
 #+END_SRC
 *** Whitespaces
@@ -198,7 +210,6 @@ Really simple package, but I find it incredibly useful. Replaces rows of whitesp
 
 #+BEGIN_SRC emacs-lisp
 (use-package shrink-whitespace
-  :ensure t
   :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
 #+END_SRC
 ** OS-specific
@@ -228,10 +239,8 @@ For now, I settled with ~ivy~ which is a little bit more "overall solution" than
 [[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy]] is improved version of ~ido-mode~ with much more customization options. It removes need for ~ubiquitous~ and ~smex~ and have good overall feel. I just started using it recently but I like what I'm seeing.
 
 #+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :ensure t)
+(use-package ivy)
 (use-package swiper
-  :ensure t
   :diminish ivy-mode
   :bind (("C-s" . swiper)
          ("C-r" . swiper)
@@ -243,7 +252,6 @@ For now, I settled with ~ivy~ which is a little bit more "overall solution" than
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t))
 (use-package counsel
-  :ensure t
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
          ("C-h f" . counsel-describe-function)
@@ -267,7 +275,6 @@ For now, I settled with ~ivy~ which is a little bit more "overall solution" than
 
 #+BEGIN_SRC emacs-lisp
 (use-package which-key 
-  :ensure t
   :config
   (which-key-setup-minibuffer)
   (setq which-key-side-window-location 'bottom)
@@ -307,7 +314,6 @@ Picking theme is personal for everybody so if you don't like my choice explore s
 
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
-    :ensure t
     :if window-system
     :config (load-theme 'base16-oceanicnext t))
   ;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
@@ -360,7 +366,6 @@ Present symbols as intended (pi -> \pi{}).
  [[https://github.com/sabof/org-bullets][org-bullets]] are presenting nice looking bullets instead of asterisks.
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
-  :ensure t
   :config (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 ** Bindings
@@ -419,8 +424,7 @@ TODO: Needs more exporting options!
 
 #+BEGIN_SRC emacs-lisp
 (use-package ox-gfm
-  :after (org)
-  :ensure t)
+  :after (org))
 #+END_SRC
 
 ** Agenda
@@ -448,7 +452,6 @@ I'm not a fan of frequent confirmations for common tasks, so staging all files i
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :ensure t
   :bind ("C-x g" . magit-status)
   :config (add-to-list 'magit-no-confirm 'stage-all-changes))
 #+END_SRC
@@ -461,7 +464,6 @@ TODO: Make sure that git gutter actually fits into my workflow and remove it if 
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
-  :ensure t
   :config (progn
             (add-hook 'git-gutter:update-hooks 'magit-after-revert-hook)
             (add-hook 'git-gutter:update-hooks 'magit-not-reverted-hook)
@@ -483,15 +485,13 @@ TODO: Make sure that git gutter actually fits into my workflow and remove it if 
 [[https://github.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents it in obvious way.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package git-timemachine
-    :ensure t)
+(use-package git-timemachine)
 #+END_SRC
 ** Git Forge
 [[https://github.com/magit/forge][Forge]] is package used in conjunction with Magit and primarily used for connection with Github, Gitlab or similar remotes (forges).
 
 #+BEGIN_SRC emacs-lisp
 (use-package forge
-  :ensure t
   :after magit)
 #+END_SRC
 ** Ediff
@@ -520,7 +520,6 @@ Treat CamelCase as separate words while editing.
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :ensure t
   :config (global-company-mode t))
 #+END_SRC
 *** Newline
@@ -533,7 +532,6 @@ Ensure ~ruby-mode~ is major mode for all ruby-related files.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-mode
-  :ensure t
   :mode "\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
   :mode "\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'")
 #+END_SRC
@@ -543,20 +541,18 @@ Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur
 
 #+BEGIN_SRC emacs-lisp
 (use-package inf-ruby
-  :ensure t
+  :init (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
   :bind 
   ("C-c q" . 'ruby-send-buffer)
-  ("C-c C-q" . 'ruby-send-buffer-and-go)
-  :init (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode))
+  ("C-c C-q" . 'ruby-send-buffer-and-go))
 #+END_SRC
 
 Use [[https://github.com/dgutov/robe][Robe]] with ~ruby-mode~, attach it to ~inf-ruby~ subprocess to show info about loaded methods. After configuring robe and company, add company-robe to the list of its backends.
 
 #+BEGIN_SRC emacs-lisp
 (use-package robe
-  :ensure t
-  :bind ("C-M-." . robe-jump)
   :init (add-hook 'ruby-mode-hook 'robe-mode)
+  :bind ("C-M-." . robe-jump)
   :config (eval-after-load 'company '(push 'company-robe company-backends)))
 #+END_SRC
 *** Refactoring
@@ -566,7 +562,6 @@ TODO: Make sure that I'm using Ruby tools or remove it
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-tools
-  :ensure t
   :init (add-hook 'ruby-mode-hook 'ruby-tools-mode))
 #+END_SRC
 *** RSpec
@@ -595,7 +590,6 @@ Don't ask for confirmation of save when compiling
 
 #+BEGIN_SRC emacs-lisp
 (use-package rspec-mode
-  :ensure t
   :config
   (define-key rspec-mode-map (kbd "C-q a") 'rspec-verify-all)
   (define-key rspec-mode-map (kbd "C-q b") 'rspec-verify-matching)
@@ -607,7 +601,6 @@ Don't ask for confirmation of save when compiling
 [[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
 #+BEGIN_SRC emacs-lisp
 (use-package rubocop
-  :ensure t
   :init (add-hook 'ruby-mode-hook 'rubocop-mode))
 #+END_SRC
 *** Rails
@@ -615,7 +608,6 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
 
 #+BEGIN_SRC emacs-lisp
 (use-package projectile-rails
-  :ensure t
   :config (projectile-rails-global-mode))
 #+END_SRC
 ** Web
@@ -623,7 +615,6 @@ Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
 
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
-  :ensure t
   :mode ("\\.erb\\'" ".html?\\'" ".s?css\\'" ".sass\\'")
   :config (setq web-mode-markup-indent-offset 2))
 #+END_SRC
@@ -631,15 +622,13 @@ Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
 Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis server.
 
 #+BEGIN_SRC emacs-lisp
-(use-package eredis
-  :ensure t)
+(use-package eredis)
 #+END_SRC
 
 I tried js2 mode, but for now I think I will stick with rjsx.
 
 #+BEGIN_SRC emacs-lisp
 (use-package rjsx-mode
-  :ensure t
   :mode ("\\.jsx\\'" ".js\\'")
   :config (progn
 	    (setq js-indent-level 2
@@ -653,7 +642,6 @@ Use separate mode for slim files, I'm still not happy with this one but can't fi
 
 #+BEGIN_SRC emacs-lisp
 (use-package slim-mode
-  :ensure t
   :mode ("\\.slim\\'"))
 #+END_SRC
 
@@ -661,7 +649,6 @@ Use separate mode for slim files, I'm still not happy with this one but can't fi
 
 #+BEGIN_SRC emacs-lisp
 (use-package restclient
-    :ensure t
     :mode (("\\.http\\'" . restclient-mode))
     :bind (:map restclient-mode-map
                 ("C-c C-f" . json-mode-beautify)))
@@ -672,21 +659,18 @@ Installing modes for various markup languages.
 *** YAML
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
-  :ensure
   :mode "\\(\\.\\(yaml\\|yml\\)\\)\\'")
 #+END_SRC
 
 *** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode 
-  :ensure t
   :init (setq-default markdown-hide-markup t))
 #+END_SRC
 
 *** JSON
 #+BEGIN_SRC emacs-lisp
-(use-package json-mode
-    :ensure t)
+(use-package json-mode)
 #+END_SRC
 * Zettelkasten
 TODO: Explain zettelkasten basics.
@@ -695,7 +679,6 @@ Zetteldeft relies on [[https://jblevins.org/projects/deft][deft]], package that 
 
 #+BEGIN_SRC emacs-lisp
 (use-package deft
-  :ensure t
   :custom
     (deft-extensions '("org" "md" "txt"))
     (deft-directory "~/org/zettelkasten/")
@@ -706,7 +689,6 @@ Zetteldeft relies on [[https://jblevins.org/projects/deft][deft]], package that 
 
 #+BEGIN_SRC emacs-lisp
 (use-package zetteldeft
-  :ensure t
   :after deft
   :config (zetteldeft-set-classic-keybindings))
 #+END_SRC
@@ -722,7 +704,6 @@ English is not my native language so I need more help than some. I still try to 
 
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell-correct-ivy
-  :ensure t
   :config (progn
             (when (eq system-type 'darwin)
               (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
@@ -735,7 +716,6 @@ English is not my native language so I need more help than some. I still try to 
 
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
-  :ensure t
   :init (global-set-key (kbd "C-c w") 'writegood-mode))
 #+END_SRC
 ** Touch typing
@@ -745,15 +725,13 @@ Spare minutes are best spent on practicing some touch typing and I added some pa
 [[https://github.com/hagleitn/speed-type][speed-type]] takes practicing examples on random which sometimes can be demanding with exotic examples that it puts in front of you.
 
 #+BEGIN_SRC emacs-lisp
-(use-package speed-type
-  :ensure t)
+(use-package speed-type)
 #+END_SRC
 *** typit
 [[https://github.com/mrkkrp/typit][typit]] is convenient for building speed on common words.
 
 #+BEGIN_SRC emacs-lisp
-(use-package typit
-  :ensure t)
+(use-package typit)
 #+END_SRC
 ** Search 
 It's possible to search Stack Overflow from Emacs with one simple command. Results are stored in org buffer which makes it super-convenient.
@@ -761,6 +739,5 @@ It's possible to search Stack Overflow from Emacs with one simple command. Resul
 TODO: See if I ever use this and remove if not.
 
 #+BEGIN_SRC emacs-lisp
-(use-package sos
-  :ensure t)
+(use-package sos)
 #+END_SRC
