@@ -386,11 +386,10 @@ While trying to be as close to defaults as possible, I still have some preferenc
              (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)))
 #+END_SRC
 *** Template for elisp code
-Standard insert is done via ~<s + TAB~, and I mostly need emacs-lisp, so I made ~<el~ template.
+Org mode 9.2 changed structure template expansion, preferred way now is to open popup with ~C-c C-,~ where you can pick template with one letter. I mostly use source with emacs-lisp, so I added it to he list under letter *p*.
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'org-structure-template-alist
-	       '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+(add-to-list 'org-structure-template-alist '("p" . "src emacs-lisp"))
 #+END_SRC
 ** Appearance
 Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's a matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
