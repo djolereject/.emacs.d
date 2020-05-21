@@ -566,37 +566,23 @@ TODO: Make sure that I'm using Ruby tools or remove it
   :init (add-hook 'ruby-mode-hook 'ruby-tools-mode))
 #+END_SRC
 *** RSpec
-When rake is available use it.
-
-#+BEGIN_SRC emacs-lisp
-(setq rspec-use-rake-when-possible nil)
-#+END_SRC
-
-Make RSpec get into editing mode on pry.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
-#+END_SRC
-
-Scroll to the first test failure
-
-#+BEGIN_SRC emacs-lisp
-(setq compilation-scroll-output 'first-error)
-#+END_SRC
-
-Don't ask for confirmation of save when compiling
-#+BEGIN_SRC emacs-lisp
-(setq compilation-ask-about-save nil)
-#+END_SRC
+Minor mode for specs [[https://github.com/pezra/rspec-mode][rspec-mode]] is a great productivity booster when setup correctly. I don't find default ~C-c ,~ binding convenient in given workflow, so I applied some faster bindings just for this mode.
+Various variables are moved in ~:config~ part of the setup for clarity.
 
 #+BEGIN_SRC emacs-lisp
 (use-package rspec-mode
   :config
+  ;; lot of repeating for keybindings, but kept like this for clarity
   (define-key rspec-mode-map (kbd "C-q a") 'rspec-verify-all)
   (define-key rspec-mode-map (kbd "C-q b") 'rspec-verify-matching)
   (define-key rspec-mode-map (kbd "C-q q") 'rspec-verify-single)
   (define-key rspec-mode-map (kbd "C-c C-c") 'rspec-verify-single)
-  (define-key rspec-mode-map (kbd "C-q f") 'rspec-run-last-failed))
+  (define-key rspec-mode-map (kbd "C-q f") 'rspec-run-last-failed)
+  (setq rspec-use-rake-when-possible nil) ; when rake is available use it.
+  (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter); make RSpec get into editing mode on pry.
+  (setq compilation-scroll-output 'first-error) ; scroll to the first test failure
+  (setq compilation-ask-about-save nil) ; don't ask for confirmation of save when compiling
+  (setq compilation-always-kill t)) ; don't ask for confirmation when killing compilation
 #+END_SRC
 *** Rubocop
 [[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
