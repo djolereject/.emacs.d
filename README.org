@@ -597,6 +597,7 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
   (define-key projectile-rails-mode-map (kbd "C-s-<return>") 'projectile-rails-goto-file-at-point))
 #+END_SRC
 ** Web
+*** HTML and CSS
 Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
 
 #+BEGIN_SRC emacs-lisp
@@ -605,32 +606,32 @@ Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
   :config (setq web-mode-markup-indent-offset 2))
 #+END_SRC
 
-Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis server.
-
-#+BEGIN_SRC emacs-lisp
-(use-package eredis)
-#+END_SRC
-
-I tried js2 mode, but for now I think I will stick with rjsx.
-
-#+BEGIN_SRC emacs-lisp
-(use-package rjsx-mode
-  :mode ("\\.jsx\\'" ".js\\'")
-  :config (progn
-	    (setq js-indent-level 2
-		  js2-strict-missing-semi-warning t)
-	    (define-key rjsx-mode-map "<" nil)
-	    (define-key rjsx-mode-map (kbd "C-d") nil)
-	    (define-key rjsx-mode-map ">" nil)))
-#+END_SRC
-
-Use separate mode for slim files, I'm still not happy with this one but can't find anything better.
+Use separate mode for slim files, because ~web-mode~ doesn't indent as it should. I'm still not happy with the mode but can't find anything better for now.
 
 #+BEGIN_SRC emacs-lisp
 (use-package slim-mode
   :mode ("\\.slim\\'"))
 #+END_SRC
+*** JavaScript
+I tried ~js2~ mode, but upgraded it with [[https://github.com/felipeochoa/rjsx-mode/][rjsx-mode]] which is derived from it. It's far from perfect, but such is the state of fast moving front-end standards and old editors.
 
+#+BEGIN_SRC emacs-lisp
+(use-package rjsx-mode
+  :mode ("\\.jsx\\'" ".js\\'")
+  :config
+  (setq js-indent-level 2)
+  (setq js2-strict-missing-semi-warning t)
+  (define-key rjsx-mode-map "<" nil)
+  (define-key rjsx-mode-map (kbd "C-d") nil)
+  (define-key rjsx-mode-map ">" nil))
+#+END_SRC
+
+~Vue~ files are opened with [[https://github.com/AdamNiederer/vue-mode][vue-mode]].
+#+begin_src emacs-lisp
+(use-package vue-mode
+  :config (setq mmm-submode-decoration-level 0)) ;; 0, 1, or 2 == none, low, and high coloring
+#+end_src
+** REST
 [[https://github.com/pashky/restclient.el][Restclient]] is used in place of Postman or Insomnia. Versatile package, but it takes some practice to get used to it.
 
 #+BEGIN_SRC emacs-lisp
@@ -657,6 +658,12 @@ Installing modes for various markup languages.
 *** JSON
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode)
+#+END_SRC
+** Redis
+Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis server.
+
+#+BEGIN_SRC emacs-lisp
+(use-package eredis)
 #+END_SRC
 * Zettelkasten
 TODO: Explain zettelkasten basics.
