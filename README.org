@@ -288,27 +288,19 @@ When file edited in buffer changes from some outside source (say, ~git reset~), 
 (global-auto-revert-mode t)
 #+END_SRC
 ** Meta
-Emacs configuration is job that is never really finished so I have some convenient shortcuts concerning ~README.org~ file.
-*** Open
-Speed dial ~README.org~ with ~C-c i~.
+Emacs configuration is job that is never really finished so I added convenient shortcut to open ~README.org~ file from anywhere: ~C-c i~. When I'm inside ~README~, it tangles and reloads it again.
 
-#+BEGIN_SRC emacs-lisp
- (defun djole/find-settings ()
-    "Edit settings.org"
-    (interactive)
-    (find-file (concat user-emacs-directory "README.org")))
-  (global-set-key (kbd "C-c i") 'djole/find-settings)
-#+END_SRC
-*** Reload
-When we change README.org, we want it quickly reloaded to observe how changes influenced running Emacs. Shortcut is ~C-c r~.
-
-#+BEGIN_SRC emacs-lisp
-(defun djole/reload-settings ()
-  "Reloads README.org at runtime"
+#+begin_src emacs-lisp
+(defun djole/load-init ()
+  "Open main README.org file or reload if it's opened."
   (interactive)
-  (org-babel-load-file (expand-file-name "README.org" user-emacs-directory)))
-(global-set-key (kbd "C-c r") 'djole/reload-settings)
-#+END_SRC
+  (if (equal original-source buffer-file-name) ;; if: I'm already inside README.org
+      (progn
+	(org-babel-tangle-file original-source compiled-source) ;; do: recompile
+	(load-file compiled-source)) ;; and: load again
+    (find-file original-source))) ;; else: open README
+(global-set-key (kbd "C-c i") 'djole/load-init) ;; Add global keybinding for this function
+#+end_src
 * Theme
 Picking theme is personal for everybody so if you don't like my choice explore some resources out there and pick one that suits you. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
 
