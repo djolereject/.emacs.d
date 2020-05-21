@@ -577,17 +577,24 @@ Various variables are moved in ~:config~ part of the setup for clarity.
   (setq compilation-always-kill t)) ; don't ask for confirmation when killing compilation
 #+END_SRC
 *** Rubocop
-[[https://github.com/bbatsov/rubocop][rubocop]] is a static code analyzer, made to enforce good practices in coding. When you install rubocop gem (~gem install rubocop~), you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
+[[https://github.com/bbatsov/rubocop][Rubocop]] is a static code analyzer, enforcing good practices in coding. After you install rubocop gem (~gem install rubocop~) you can add [[https://github.com/bbatsov/rubocop-emacs][rubocop-emacs]] to integrate it with Emacs.
+
 #+BEGIN_SRC emacs-lisp
 (use-package rubocop
   :init (add-hook 'ruby-mode-hook 'rubocop-mode))
 #+END_SRC
 *** Rails
-Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.com/asok/projectile-rails][projectile-rails]] helps navigating Rails projects.
+Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.com/asok/projectile-rails][projectile-rails]] helps navigating Rails projects. I added couple of handy keybindings that utilize ~Super~ key along with ~Control~.
 
 #+BEGIN_SRC emacs-lisp
 (use-package projectile-rails
-  :config (projectile-rails-global-mode))
+  :config (projectile-rails-global-mode)
+  (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
+  (define-key projectile-rails-mode-map (kbd "C-s-m") 'projectile-rails-find-model)
+  (define-key projectile-rails-mode-map (kbd "C-s-v") 'projectile-rails-find-view)
+  (define-key projectile-rails-mode-map (kbd "C-s-c") 'projectile-rails-find-controller)
+  (define-key projectile-rails-mode-map (kbd "C-s-s") 'projectile-rails-find-current-spec)
+  (define-key projectile-rails-mode-map (kbd "C-s-<return>") 'projectile-rails-goto-file-at-point))
 #+END_SRC
 ** Web
 Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
