@@ -674,22 +674,22 @@ Zetteldeft relies on [[https://jblevins.org/projects/deft][deft]], package that 
 ** Writing and spelling
 English is not my native language so I need more help than some. I still try to keep spellcheck unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial suggestions or is writing more in natural than programming languages.
 
-**** fly-spell
-[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is wrapper for ~fly-spell~ with interface that can easily work with ~ivy~, ~helm~ or simple popup presentation. 
+*** fly-spell
+[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is wrapper for ~flyspell~ with interface that can easily work with ~ivy~, ~helm~ or simple popup presentation. 
+~Fly-spell~ uses separate program to compare words, on Mac it's easiest to ~brew install aspell~. Other option is hunspell, but it's harder for setup.
 
-- ~fly-spell~ uses separate program to compare words. ~brew install aspell~ is easy way to do it on Mac but you have to bind it's path manually.
-- Correcting previous word while typing is the most common use-case so it's bound to convenient shortcut: ~C-;~
+Correcting previous word while typing is the most common use-case so it's bound to convenient shortcut ~C-;~
 
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell-correct-ivy
-  :config (progn
-            (when (eq system-type 'darwin)
-              (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-              (setq exec-path (append exec-path '("/usr/local/bin"))))
-            (add-hook 'text-mode-hook 'flyspell-mode)
-            (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-previous)))
+  :config
+  (when (eq system-type 'darwin) ;; Manually set path in MacOS
+    (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+    (setq exec-path (append exec-path '("/usr/local/bin"))))
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-previous))
 #+END_SRC
-**** writegood-mode
+*** writegood-mode
 [[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is checking for weasel words, passive voice or duplicates in prose.
 
 #+BEGIN_SRC emacs-lisp
