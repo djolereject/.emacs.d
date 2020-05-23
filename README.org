@@ -436,50 +436,26 @@ Version control is important part of Emacs ever since [[https://github.com/magit
 
 ** Magit
 Learn it, use it and never look back on days of typing something like: 
-
 ~git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit~
-
-I'm not a fan of frequent confirmations for common tasks, so staging all files is added to 'no confirm' list.
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :bind ("C-x g" . magit-status)
-  :config (add-to-list 'magit-no-confirm 'stage-all-changes))
-#+END_SRC
-** Git Gutter
-[[https://github.com/syohex/emacs-git-gutter][git-gutter]] is displaying diff from last stage in left column (presenting changed lines as: "~", added: "+" and removed: "-"). One of the selling points for this package is that every chunk can be separately staged.
-
-I find ~M-g~ to be good prefix for ~git-gutter~ commands but use whatever works for you.
-
-TODO: Make sure that git gutter actually fits into my workflow and remove it if it doesn't
-
-#+BEGIN_SRC emacs-lisp
-(use-package git-gutter
-  :config (progn
-            (add-hook 'git-gutter:update-hooks 'magit-after-revert-hook)
-            (add-hook 'git-gutter:update-hooks 'magit-not-reverted-hook)
-            (global-git-gutter-mode +1)
-            (setq git-gutter:modified-sign "~")
-            (setq git-gutter:added-sign "+")
-            (setq git-gutter:deleted-sign "-")
-            (setq git-gutter:window-width 3)
-            (set-face-foreground 'git-gutter:modified "#b58900")
-            (set-face-foreground 'git-gutter:added "#859900")
-            (set-face-foreground 'git-gutter:deleted "#dc322f")
-            (global-set-key (kbd "M-g s") 'git-gutter:stage-hunk)
-            (global-set-key (kbd "M-g r") 'git-gutter:revert-hunk)
-            (global-set-key (kbd "M-g m") #'git-gutter:mark-hunk)
-            (global-set-key (kbd "M-g n") 'git-gutter:next-hunk)
-            (global-set-key (kbd "M-g p") 'git-gutter:previous-hunk)))
+  :config
+  (add-to-list 'magit-no-confirm 'stage-all-changes) ; don't confirm staging all (S)
+  (setq magit-save-repository-buffers 'dontask)) ; save related buffers when opening magit
 #+END_SRC
 ** Git Time Machine
-[[https://github.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents it in obvious way.
+[[https://gitlab.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents differences in obvious way.
+Using it is easy: ~M-x git-timemachine~ and move through historic revisions of file with ~p~ and ~n~.
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-timemachine)
 #+END_SRC
 ** Git Forge
-[[https://github.com/magit/forge][Forge]] is package used in conjunction with Magit and primarily used for connection with Github, Gitlab or similar remotes (forges).
+[[https://github.com/magit/forge][Forge]] is package used in conjunction with Magit and primarily used for connection with ~Github~, ~Gitlab~ or similar remotes (forges).
+
+TODO: Make sure it is used and remove if not!
 
 #+BEGIN_SRC emacs-lisp
 (use-package forge
