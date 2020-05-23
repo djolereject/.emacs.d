@@ -153,13 +153,21 @@ Beep is frequent, irritating and not at all helpful. Send it to message screen i
 #+END_SRC
 ** Buffer specific
 *** Switching
-It's possible to just use ~other-window~ command and add some keybindings to it, but [[https://github.com/abo-abo/ace-window][ace-window]] is easier to use and brings some additional options.
+After trying out different solutions, I'm most comfortable switching windows with ~Ctrl Tab~, probably because it's the default way of switching tabs in browsers so I can use the same mental mapping.
+
+#+begin_src emacs-lisp
+(global-set-key [C-S-tab] 'windmove-left) ; move to left window
+(global-set-key [C-tab] 'windmove-right) ; move to right window
+#+end_src
+
+[[Https://github.com/abo-abo/ace-window][Ace-window]] brings some additional options for case when there are more windows.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
-  :config (progn
-            (global-set-key (kbd "M-o") 'ace-window)
-            (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))))
+  :config
+  (global-set-key (kbd "M-o") 'ace-window)
+  (global-set-key (kbd "M-i") 'ace-swap-window)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+END_SRC
 *** Clear
 It might be personal quirk but most frequent use of ~C-l~ command for me is to move cursor position to top of the screen, so I usually type ~C-l C-l~. Whenever something is repeating, aim for simplification.
@@ -375,7 +383,8 @@ While trying to be as close to defaults as possible, I still have some preferenc
              (define-key org-mode-map (kbd "s-<up>") 'org-move-subtree-up)
              (define-key org-mode-map (kbd "s-<down>") 'org-move-subtree-down)
              (define-key org-mode-map (kbd "s-<right>") 'org-do-demote)
-             (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)))
+             (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)
+	     (define-key org-mode-map [C-tab] nil))) ;; used for windmove-right
 #+END_SRC
 *** Template for elisp code
 Org mode 9.2 changed structure template expansion, preferred way now is to open popup with ~C-c C-,~ where you can pick template with one letter. I mostly use source with emacs-lisp, so I added it to he list under letter *p*.
