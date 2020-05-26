@@ -668,7 +668,9 @@ Zetteldeft relies on [[https://jblevins.org/projects/deft][deft]], package that 
 #+BEGIN_SRC emacs-lisp
 (use-package zetteldeft
   :after deft
-  :config (zetteldeft-set-classic-keybindings))
+  :config
+  (zetteldeft-set-classic-keybindings)
+  (setq zetteldeft-title-suffix "\n#+TAGS #"))
 #+END_SRC
 * Small side packages
 ** Writing and spelling
