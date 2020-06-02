@@ -503,6 +503,15 @@ Treat CamelCase as separate words while editing.
 (setq require-final-newline nil)
 (setq mode-require-final-newline nil)
 #+END_SRC
+*** Folding
+I fought against using folding for my code because I feel that need for it is major red flag, but programmer's life is a hard one and I found myself working with company that believes in ruby methods with hundreds of lines of code. This package folds methods so you can see bigger picture.
+
+#+begin_src emacs-lisp
+(use-package yafolding
+  :config
+  (add-hook 'prog-mode-hook 'yafolding-mode)
+  (global-set-key (kbd "C-c y") 'yafolding-discover))
+#+end_src
 ** Ruby
 Ensure ~ruby-mode~ is major mode for all ruby-related files.
 
