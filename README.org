@@ -119,11 +119,12 @@ Opening files with unknown extension is best to start in ~text-mode~ and specify
 #+END_SRC
 ** Remove unwanted
 *** Decorations
-If you use Emacs without mouse there is not much need for toolbar and scrollbar.
+If you use Emacs without mouse there is not much need for toolbar, scrollbar or menu.
 
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
+(menu-bar-mode -1)
 #+END_SRC
 *** Messages
 While these screens might be helpful for beginners when they start their journey with Emacs, after a while they become annoyances.
