@@ -221,6 +221,16 @@ Really simple package, but I find it incredibly useful. Replaces rows of whitesp
 (use-package shrink-whitespace
   :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
 #+END_SRC
+*** Beacon
+Whenever the window scrolls a light will shine on top of your cursor so you know where it is.
+
+#+begin_src emacs-lisp
+(use-package beacon
+  :config
+  (setq beacon-blink-duration 0.3)
+  (setq beacon-blink-delay 0.5)
+  (beacon-mode 1))
+#+end_src
 ** OS-specific
 For now, I only customized things related to OSX because that's the system I'm spending most of my time in. I plan to do fine tuning for Ubuntu also.
 
