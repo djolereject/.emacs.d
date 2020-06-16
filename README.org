@@ -670,6 +670,14 @@ Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis serve
 #+BEGIN_SRC emacs-lisp
 (use-package eredis)
 #+END_SRC
+* File System
+** Ansible
+Small package for helping with ansible files, especially with encryption of buffers.
+
+#+begin_src emacs-lisp
+(use-package ansible
+  :config (add-hook 'yaml-mode-hook 'ansible))
+#+end_src
 * Zettelkasten
 TODO: Explain zettelkasten basics.
 
