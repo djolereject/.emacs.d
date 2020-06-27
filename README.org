@@ -700,25 +700,38 @@ Zetteldeft relies on [[https://jblevins.org/projects/deft][deft]], package that 
   (zetteldeft-set-classic-keybindings)
   (setq zetteldeft-title-suffix "\n#+TAGS #"))
 #+END_SRC
-* Small side packages
-** Writing and spelling
+* Writing
 English is not my native language so I need more help than some. I still try to keep spellcheck unobtrusive and grammar or style suggestions on minimum so this setting could just be starting point for someone who needs more substantial suggestions or is writing more in natural than programming languages.
 
 *** fly-spell
 [[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is wrapper for ~flyspell~ with interface that can easily work with ~ivy~, ~helm~ or simple popup presentation. 
-~Fly-spell~ uses separate program to compare words, on Mac it's easiest to ~brew install aspell~. Other option is hunspell, but it's harder for setup.
+~Fly-spell~ uses separate program to compare words, on Mac it's easiest to install ~aspell~ which comes with it's own dictionaries.
+Other option is [[https://github.com/hunspell/hunspell][hunspell]], but it's harder for setup because you have to manually put dictionaries in path. Tutorial for usage is available on it's homepage and you should make sure that you have dictionaries for preferred languages by running ~hunspell -D~ in console, and make sure that one of them is labeled "default". More explanation about setting Hunspell to work with Emacs can be found [[https://stackoverflow.com/a/25431519/8699938][here]].
+I hooked text and org mode with ~flyspell-mode~, binding correction to ~C-;~.
 
-Correcting previous word while typing is the most common use-case so it's bound to convenient shortcut ~C-;~
-
-#+BEGIN_SRC emacs-lisp
-(use-package flyspell-correct-ivy
+#+begin_src emacs-lisp
+(use-package flyspell-correct-popup ; Seems more convenient than `flyspell-correct-ivy` that I used for a long time
+  :after flyspell
   :config
-  (when (eq system-type 'darwin) ;; Manually set path in MacOS
-    (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-    (setq exec-path (append exec-path '("/usr/local/bin"))))
+  (setq ispell-program-name (executable-find "hunspell"))
   (add-hook 'text-mode-hook 'flyspell-mode)
-  (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-previous))
-#+END_SRC
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-wrapper))
+#+end_src
+*** guess-language
+For those who frequently use more than one language, it's convenient to have that language automatically recognized without need for some headers in files. [[https://github.com/tmalsburg/guess-language.el][guess-language]] does exactly that and can work even in files where languages are mixed. You just put cursor on wanted paragraph and run ~guess-language~.
+I hooked it with flyspell-mode because I use it for switching dictionaries which seems like common usage. My dictionaries obviously will not work for everyone, but it's fairly easy to change them. Just make sure that names are the same as dictionaries available to `ispell-program-mode` you picked in `fly-spell` section. For example, Hunspell uses ~en_US~ as a name for dictionary, so you have to connect language ~en~ to it.
+
+#+begin_src emacs-lisp
+(use-package guess-language
+  :after flyspell-correct
+  :config
+  (add-hook 'flyspell-mode-hook 'guess-language-mode)
+  (setq guess-language-languages '(en sr sr_LAT))
+  (setq guess-language-langcodes
+	'((en . ("en_US" "English")) (sr . ("sr" "Српски")) (sr_LAT . ("sr_LAT" "Srpski")))))
+#+end_src
+
 *** writegood-mode
 [[https://github.com/bnbeckwith/writegood-mode][writegood-mode]] is checking for weasel words, passive voice or duplicates in prose.
 
@@ -726,6 +739,7 @@ Correcting previous word while typing is the most common use-case so it's bound 
 (use-package writegood-mode
   :init (global-set-key (kbd "C-c w") 'writegood-mode))
 #+END_SRC
+* Small side packages
 ** Touch typing
 Spare minutes are best spent on practicing some touch typing and I added some packages that can be helpful.
 
