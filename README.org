@@ -576,6 +576,7 @@ Various variables are moved in ~:config~ part of the setup for clarity.
   (define-key rspec-mode-map (kbd "C-q q") 'rspec-verify-single)
   (define-key rspec-mode-map (kbd "C-c C-c") 'rspec-verify-single)
   (define-key rspec-mode-map (kbd "C-q f") 'rspec-run-last-failed)
+  (define-key rspec-mode-map (kbd "C-q r") 'rspec-rerun)
   (setq rspec-use-rake-when-possible nil) ; when rake is available use it.
   (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter); make RSpec get into editing mode on pry.
   (setq compilation-scroll-output 'first-error) ; scroll to the first test failure
