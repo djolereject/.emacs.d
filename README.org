@@ -269,7 +269,8 @@ For now, I settled with ~ivy~ which is a little bit more "overall solution" than
          ("C-c u" . swiper-all))
   :config
   (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t))
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "%d/%d "))
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
