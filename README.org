@@ -255,47 +255,51 @@ For now, I only customized things related to OSX because that's the system I'm s
   (setq mac-right-command-modifier 'control))
 #+END_SRC
 ** Minibuffer
-There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time chasing it's quirks around some other big packages. 
+There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time chasing it's quirks around some other big packages.
 
 Another possible route is having just ~ido-mode~ and big number of specialized settings for different scenarios which also tends to become clutter after a while. 
 
-For now, I settled with ~ivy~ which is a little bit more "overall solution" than I'm comfortable with, but it keeps things confined. I might rethink this decision if it gets too much in the way.
-*** Ivy
-[[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy]] is improved version of ~ido-mode~ with much more customization options. It removes need for ~ubiquitous~ and ~smex~ and have good overall feel. I just started using it recently but I like what I'm seeing.
+For now, I settled with ~Ivy~ which is a little bit more "overall solution" than I'm comfortable with, but it keeps things confined.
 
-#+BEGIN_SRC emacs-lisp
-(use-package ivy)
-(use-package swiper
-  :diminish ivy-mode
-  :bind (("C-s" . swiper)
-         ("C-r" . swiper)
-         ("C-c C-r" . ivy-resume)
-         ("C-c h m" . woman)
-         ("C-x b" . ivy-switch-buffer)
-         ("C-c u" . swiper-all))
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "%d/%d "))
+*** Ivy, Counsel, Swiper
+~Ivy~ is split into three packages - ~Ivy~, ~Swiper~ and ~Counsel~. Basic functionality of ~Ivy~ is to present list of options as completion mechanism. It's not strictly bound to minibuffer and it can manage various inputs. ~Swiper~ is enhancement for ~I-search~, and ~Counsel~ is collection of enhanced Emacs commands. By installing Counsel other two are brought as dependencies, but they all can be used separately.
+I made lot of global keybindings for these packages because they are created to replace standard functions of Emacs and enhance them in some way. Good doc for learning about this package can be found [[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][here]] and comprehensive manual is [[http://oremacs.com/swiper/][here]].
+
+#+begin_src emacs-lisp
 (use-package counsel
-  :bind (("M-x" . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-         ("C-h f" . counsel-describe-function)
-         ("C-h v" . counsel-describe-variable)
-         ("C-h i" . counsel-info-lookup-symbol)
-         ("C-h u" . counsel-unicode-char)
-         ("C-c k" . counsel-rg)
-         ("C-x l" . counsel-locate)
-         ("C-c g" . counsel-git-grep)
-         ("C-c h i" . counsel-imenu)
-         ("C-x p" . counsel-list-processes))
   :config
-  (ivy-set-actions
-   'counsel-find-file
-   '(("j" find-file-other-window "other")))
-  (ivy-set-actions 'counsel-git-grep
-                   '(("j" find-file-other-window "other"))))
-#+END_SRC
+  (ivy-mode 1) ; Use ivy-mode globally
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "%d/%d ")
+  (setq ivy-height 20)
+  :bind (
+	 ;; Ivy bindings
+	 ("C-x b" . ivy-switch-buffer)
+	 ("C-c z" . ivy-resume)
+	 ;; Swiper bindings
+	 ("C-s" . swiper) ; replace I-search with swiper version
+	 ("C-r" . swiper) ; replace backward I-search with swiper version
+	 ("C-c u" . swiper-all) ; search in all opened buffers
+	 ;; Counsel bindings
+	 ("M-x" . counsel-M-x)
+	 ("C-c g" . counsel-ag)
+	 ("C-x l" . counsel-locate)
+	 ("C-c m" . counsel-imenu)
+   ("C-c o" . counsel-outline)
+   ("C-c t" . counsel-load-theme)
+	 ("C-x C-f" . counsel-find-file)
+   ("C-x y" . counsel-find-library)
+   ("C-x p" . counsel-list-processes)
+   ("C-h f" . counsel-describe-function)
+   ("C-h v" . counsel-describe-variable)
+   ("C-h a" . counsel-apropos)
+   ("C-h i" . counsel-info-lookup-symbol)
+   ("C-h u" . counsel-unicode-char)
+   ("C-h b" . counsel-descbinds) ; it hides `describe-bindings` from help.el
+   ("C-h W" . woman) ; not part of counsel, but it belongs with these keybindings
+	 ("C-M-y" . counsel-yank-pop)
+   ))
+#+end_src
 *** Which key
 [[https://github.com/justbur/emacs-which-key][which-key]] opens popup after entering incomplete command. Delay of one second gives enough time to finish command without seeing it, and if I'm stuck it shows available endings to entered prefix.
 
@@ -596,6 +600,7 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
 #+BEGIN_SRC emacs-lisp
 (use-package projectile-rails
   :config (projectile-rails-global-mode)
+  (setq projectile-completion-system 'ivy)
   (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
   (define-key projectile-rails-mode-map (kbd "C-s-m") 'projectile-rails-find-model)
   (define-key projectile-rails-mode-map (kbd "C-s-v") 'projectile-rails-find-view)
