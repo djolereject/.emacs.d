@@ -673,6 +673,12 @@ Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis serve
 (use-package eredis)
 #+END_SRC
 * File System
+** Wgrep
+Every search reasult or file list can be conveyed into ~grep buffer~ which can be edited with [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]], effectively giving you power of ~sed~ in Emacs.
+
+#+begin_src emacs-lisp
+(use-package wgrep)
+#+end_src
 ** Ansible
 Small package for helping with ansible files, especially with encryption of buffers.
 
