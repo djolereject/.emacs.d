@@ -605,7 +605,9 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
   (define-key projectile-rails-mode-map (kbd "C-s-m") 'projectile-rails-find-model)
   (define-key projectile-rails-mode-map (kbd "C-s-v") 'projectile-rails-find-view)
   (define-key projectile-rails-mode-map (kbd "C-s-c") 'projectile-rails-find-controller)
-  (define-key projectile-rails-mode-map (kbd "C-s-s") 'projectile-rails-find-current-spec)
+  (define-key projectile-rails-mode-map (kbd "C-s-s") 'projectile-rails-find-spec)
+  (define-key projectile-rails-mode-map (kbd "C-s-l") 'projectile-rails-find-lib)
+  (define-key projectile-rails-mode-map (kbd "C-s-p") 'projectile-rails-find-current-spec)
   (define-key projectile-rails-mode-map (kbd "C-s-<return>") 'projectile-rails-goto-file-at-point))
 #+END_SRC
 ** Web
