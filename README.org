@@ -200,6 +200,13 @@ When file edited in buffer changes from some outside source (say, ~git reset~), 
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode t)
 #+END_SRC
+*** Visible go-to line
+Jumping to line with ~goto-line~ can be more ergonomic if you have a preview of where that jump will land you.
+
+#+begin_src emacs-lisp
+(use-package goto-line-preview
+  :config (global-set-key [remap goto-line] 'goto-line-preview)) ; replace goto-line globally
+#+end_src
 ** Editing
 *** Fast buffer kill
 Confirming or picking exact buffer when trying to kill it wastes time, just leave finger on Control and do it faster with ~C-x C-k~.
