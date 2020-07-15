@@ -228,12 +228,21 @@ Interesting and efficient way of dealing with undo in Emacs. Takes some time to 
   :config (global-undo-tree-mode))
 #+END_SRC
 *** Whitespaces
+**** Whitespace shrink
 Really simple package, but I find it incredibly useful. Replaces rows of whitespaces with just one or deletes single whitespace. Shortcut is ~M-Space~.
 
 #+BEGIN_SRC emacs-lisp
 (use-package shrink-whitespace
   :config (global-set-key (kbd "M-SPC") 'shrink-whitespace))
 #+END_SRC
+
+**** Whitespace cleanup
+Removing whitespaces in buffer from the end of the lines introduced by you. This is convenient in messy codebases because it doesn't change other parts of the code.
+
+#+begin_src emacs-lisp
+(use-package ws-butler
+  :config (ws-butler-global-mode 1))
+#+end_src
 *** Beacon
 Whenever the window scrolls a light will shine on top of your cursor so you know where it is.
 
