@@ -779,6 +779,15 @@ I hooked it with flyspell-mode because I use it for switching dictionaries which
 (use-package writegood-mode
   :init (global-set-key (kbd "C-c w") 'writegood-mode))
 #+END_SRC
+* Reading
+** Focus
+[[https://github.com/larstvei/Focus][Focus]] can be useful for increasing visibility of smaller part of the buffer. Active ~thing~ can be word, paragraph, s-expression... and rest of the text in the buffer gets dimmed to highlight region of interest.
+It's not turned on by default because it can get in the way when reading is the main activity in the buffer.
+
+#+begin_src emacs-lisp
+(use-package focus
+:config (define-key focus-mode-map (kbd "C-c f") 'focus-change-thing)) ; override global elfeed keybinding
+#+end_src
 * Small side packages
 ** Touch typing
 Spare minutes are best spent on practicing some touch typing and I added some packages that can be helpful.
