@@ -779,6 +779,15 @@ I hooked it with flyspell-mode because I use it for switching dictionaries which
 (use-package writegood-mode
   :init (global-set-key (kbd "C-c w") 'writegood-mode))
 #+END_SRC
+*** define-word
+Nice little [[https://github.com/abo-abo/define-word][tool]] that pull definition of the word from [[https://wordnik.com][wordnik]] and present it as ~message~. I bound it to the symbol ~#~, and it can be called from anywhere with ~M-#~ to define word with cursor on it or prompt for word with ~C-M-#~.
+
+#+begin_src emacs-lisp
+(use-package define-word
+  :bind
+  ("M-#" . define-word-at-point)
+  ("C-M-#" . define-word))
+#+end_src
 * Reading
 ** RSS
 *** elfeed
