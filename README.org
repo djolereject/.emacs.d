@@ -780,6 +780,38 @@ I hooked it with flyspell-mode because I use it for switching dictionaries which
   :init (global-set-key (kbd "C-c w") 'writegood-mode))
 #+END_SRC
 * Reading
+** RSS
+*** elfeed
+[[https://github.com/skeeto/elfeed][Elfeed]] is the de facto standard for reading RSS feeds. It's globally bound to ~C-c f~, because I primarily read my feeds like this. Most of the specific settings for ~elfeed~ are moved to the next heading where I use ~elfeed-org~. Elfeed saves database in the `~/.emacs.d/data/elfeed` directory which you can delete if you want to start over.
+
+#+begin_src emacs-lisp
+(use-package elfeed
+  :bind ("C-c f" . elfeed))
+#+end_src
+
+*** elfeed-org
+I use [[https://github.com/remyhonig/elfeed-org][elfeed-org]] mostly to load my feeds from the org file. If you choose to do the same thing, make sure to change path to your file and to tag root node in it with ~:elfeed:~.
+
+#+begin_src emacs-lisp
+(use-package elfeed-org
+  :after elfeed
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list "~/org/elfeed.org"))
+  (setq elfeed-org-tree-id "elfeed"))
+#+end_src
+
+*** elfeed-goodies
+Some shortcuts from [[https://github.com/algernon/elfeed-goodies][elfeed-goodies]] are conveniet for presentation of the feeds. I mostly use `p` and `n` inside the pane for going to previous and next article.
+
+#+begin_src emacs-lisp
+(use-package elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup)
+  (setq elfeed-goodies/entry-pane-position 'top)
+  (setq elfeed-show-entry-switch 'switch-to-buffer))
+#+end_src
 ** Focus
 [[https://github.com/larstvei/Focus][Focus]] can be useful for increasing visibility of smaller part of the buffer. Active ~thing~ can be word, paragraph, s-expression... and rest of the text in the buffer gets dimmed to highlight region of interest.
 It's not turned on by default because it can get in the way when reading is the main activity in the buffer.
