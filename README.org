@@ -356,10 +356,16 @@ Picking theme is personal for everybody so if you don't like my choice explore s
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
     :if window-system
-    :config (load-theme 'base16-oceanicnext t))
+    :config (load-theme 'base16-atelier-cave-light t))
   ;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
   ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale 
 #+END_SRC
+
+#+begin_src emacs-lisp :tangle no
+(use-package silkworm-theme
+  :config (load-theme 'silkworm t))
+;; basic gandalf silkworm cloud nova
+#+end_src
 * Org Mode
 Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
 
@@ -417,15 +423,16 @@ While trying to be as close to defaults as possible, I still have some preferenc
 - This leaves M-right/left to behave same as in other modes
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook          
-          '(lambda ()
-             (define-key org-mode-map (kbd "M-<right>") 'forward-word)
-             (define-key org-mode-map (kbd "M-<left>") 'backward-word)
-             (define-key org-mode-map (kbd "s-<up>") 'org-move-subtree-up)
-             (define-key org-mode-map (kbd "s-<down>") 'org-move-subtree-down)
-             (define-key org-mode-map (kbd "s-<right>") 'org-do-demote)
-             (define-key org-mode-map (kbd "s-<left>") 'org-do-promote)
-	     (define-key org-mode-map [C-tab] nil))) ;; used for windmove-right
+(use-package org
+  :bind  (:map org-mode-map
+	       ("M-<right>" . forward-word)
+	       ("M-<left>" . backward-word)
+	       ("s-<up>" . org-move-subtree-up)
+	       ("s-<down>" . org-move-subtree-down)
+	       ("s-<right>" . org-do-demote)
+	       ("s-<left>" . org-do-promote)
+	       ("C-q q" . org-todo)
+	       ([C-tab] . nil))) ;; used for windmove-right
 #+END_SRC
 *** Template for elisp code
 Org mode 9.2 changed structure template expansion, preferred way now is to open popup with ~C-c C-,~ where you can pick template with one letter. I mostly use source with emacs-lisp, so I added it to he list under letter *p*.
@@ -481,6 +488,36 @@ Define default place for my agenda
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files (list "~/org/agenda.org"))
 #+END_SRC
+** ADDITIONAL
+
+This is specialized functions for starting and stopping time when change to and from ACTIVE and PAUSED (DONE is automatical)
+#+begin_src emacs-lisp
+(eval-after-load 'org
+  '(progn
+     (setq org-todo-keywords '((sequence "TODO" "ACTIVE(a)" "PAUSED(p)" "|" "DONE(d)" "CANCELED(x)")))
+
+     (defun djole/org-clock-in-active ()
+       "Clock in when the task is marked ACTIVE."
+       (when (and (string= org-state "ACTIVE")
+		  (not (string= org-last-state org-state)))
+	 (org-clock-in)))
+     (add-hook 'org-after-todo-state-change-hook 'djole/org-clock-in-active)
+     ;;
+     (defadvice org-clock-in (after djole activate)
+       "Set this task's status to 'ACTIVE."
+       (org-todo "ACTIVE"))
+     ;;
+     (defun djole/org-clock-out-paused ()
+       "Clock out when the task is marked PAUSED."
+       (when (and (string= org-state "PAUSED")
+                  (equal (marker-buffer org-clock-marker) (current-buffer))
+                  (< (point) org-clock-marker)
+	          (> (save-excursion (outline-next-heading) (point))
+		     org-clock-marker)
+		  (not (string= org-last-state org-state)))
+	 (org-clock-out)))
+     (add-hook 'org-after-todo-state-change-hook 'djole/org-clock-out-paused)))
+#+end_src
 * Git
 Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
 
@@ -765,6 +802,7 @@ I hooked it with flyspell-mode because I use it for switching dictionaries which
 #+begin_src emacs-lisp
 (use-package guess-language
   :after flyspell-correct
+  :load-path "elpa/guess_tmp/" ;; Temporary line because updated package is still not on MELPA
   :config
   (add-hook 'flyspell-mode-hook 'guess-language-mode)
   (setq guess-language-languages '(en sr sr_LAT))
