@@ -854,17 +854,6 @@ I use [[https://github.com/remyhonig/elfeed-org][elfeed-org]] mostly to load my 
   (setq elfeed-org-tree-id "elfeed"))
 #+end_src
 
-*** elfeed-goodies
-Some shortcuts from [[https://github.com/algernon/elfeed-goodies][elfeed-goodies]] are conveniet for presentation of the feeds. I mostly use `p` and `n` inside the pane for going to previous and next article.
-
-#+begin_src emacs-lisp
-(use-package elfeed-goodies
-  :after elfeed
-  :config
-  (elfeed-goodies/setup)
-  (setq elfeed-goodies/entry-pane-position 'top)
-  (setq elfeed-show-entry-switch 'switch-to-buffer))
-#+end_src
 ** Focus
 [[https://github.com/larstvei/Focus][Focus]] can be useful for increasing visibility of smaller part of the buffer. Active ~thing~ can be word, paragraph, s-expression... and rest of the text in the buffer gets dimmed to highlight region of interest.
 It's not turned on by default because it can get in the way when reading is the main activity in the buffer.
