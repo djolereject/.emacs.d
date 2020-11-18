@@ -530,7 +530,7 @@ Learn it, use it and never look back on days of typing something like:
   :bind ("C-x g" . magit-status)
   :config
   (add-to-list 'magit-no-confirm 'stage-all-changes) ; don't confirm staging all (S)
-  (setq magit-save-repository-buffers 'dontask)) ; save related buffers when opening magit
+  (setq magit-save-repository-buffers 'dontask) ; save related buffers when opening magit
 #+END_SRC
 ** Git Time Machine
 [[https://gitlab.com/pidu/git-timemachine][git-timemachine]] lets me browse through previous commits in given file. It's not used often, but reverting files can be touchy operation and this package presents differences in obvious way.
