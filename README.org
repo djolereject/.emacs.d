@@ -117,6 +117,12 @@ Opening files with unknown extension is best to start in ~text-mode~ and specify
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'text-mode)
 #+END_SRC
+*** Local values
+This kind of safety is not needed and I want Emacs to load variables when it's in some directory.
+
+#+begin_src emacs-lisp
+(setq enable-local-variables :all)
+#+end_src
 ** Remove unwanted
 *** Decorations
 If you use Emacs without mouse there is not much need for toolbar, scrollbar or menu.
