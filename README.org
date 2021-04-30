@@ -730,7 +730,10 @@ Use ~web-mode~ for html, erb and various stylesheet files, indent by 2 spaces.
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :mode ("\\.erb\\'" ".html?\\'" ".s?css\\'" ".sass\\'")
-  :config (setq web-mode-markup-indent-offset 2))
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
 #+END_SRC
 
 Use separate mode for slim files, because ~web-mode~ doesn't indent as it should. I'm still not happy with the mode but can't find anything better for now.
@@ -754,9 +757,29 @@ I tried ~js2~ mode, but upgraded it with [[https://github.com/felipeochoa/rjsx-m
 #+END_SRC
 
 ~Vue~ files are opened with [[https://github.com/AdamNiederer/vue-mode][vue-mode]].
+
 #+begin_src emacs-lisp
 (use-package vue-mode
-  :config (setq mmm-submode-decoration-level 0)) ;; 0, 1, or 2 == none, low, and high coloring
+  :mode ("\\.vue\\'")
+  :config
+  (setq mmm-submode-decoration-level 1)
+  (setq js-indent-level 2)) ;; 0, 1, or 2 == none, low, and high coloring
+#+end_src
+
+Jest for testing front end
+#+begin_src emacs-lisp
+(use-package jest-test-mode
+:commands jest-test-mode
+:init
+(add-hook 'typescript-mode-hook 'jest-test-mode)
+(add-hook 'js-mode-hook 'jest-test-mode)
+(add-hook 'typescript-tsx-mode-hook 'jest-test-mode)
+:config
+(define-key jest-test-mode-map (kbd "C-c C-c") 'jest-test-run-at-point)
+(define-key jest-test-mode-map (kbd "C-q q") 'jest-test-run-at-point)
+;(define-key jest-test-mode-map (kbd "C-q a") 'jest-test-run-)
+(define-key jest-test-mode-map (kbd "C-q a") 'jest-test-run) ; all in a buffer
+(define-key jest-test-mode-map (kbd "C-q p") 'jest-test-run-all-tests)) ; all in a project
 #+end_src
 ** REST
 [[https://github.com/pashky/restclient.el][Restclient]] is used in place of Postman or Insomnia. Versatile package, but it takes some practice to get used to it.
