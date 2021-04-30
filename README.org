@@ -26,6 +26,13 @@ In ~init~ we have to set some things beforehand so ~settings~ can run consistent
 - ~config-dir~ and ~data-dir~ are names of directories that ~no-littering~ package uses for storing transient files which need to be created in the pre-processing stage.
 * Prerequisites
 Before we go on with installing packages it's essential to configure some things. Everything in this section concerns initializing ~set-package~ and making sure we don't create clutter in the init directory.
+** TLS Setup
+Before installing anything, it's essential to setup TLS certificate because Emacs is not handling that in ideal way. For openssl to work on OSX we need to install ~libressl~, which is easiest to do via [[https://brew.sh/][Homebrew]]: ~brew install libressl~. Popular Linux distros have this predefined so there is no need for any setup and for other systems you should easily find equivalent ssl libraries.
+
+#+BEGIN_SRC emacs-lisp
+(require 'gnutls)
+(add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl@1.1/cert.pem")
+#+END_SRC
 ** Sources
 Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. I used to go with ~melpa-stable~, but since that time I learned that there is no advantage presumed with "stable" postfix in the name. I can always download packages and set local source for ~use-package~, making it even more secure if that becomes important.
 
@@ -33,13 +40,6 @@ Having only one source repository keeps things simple and I don't need fancy, ra
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
-#+END_SRC
-** TLS Setup
-Before installing anything, it's essential to setup TLS certificate because Emacs is not handling that in ideal way. For openssl to work on OSX we need to install ~libressl~, which is easiest to do via [[https://brew.sh/][Homebrew]]: ~brew install libressl~. Popular Linux distros have this predefined so there is no need for any setup and for other systems you should easily find equivalent ssl libraries.
-
-#+BEGIN_SRC emacs-lisp
-(require 'gnutls)
-(add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl/cert.pem")
 #+END_SRC
 ** use-package
 I already explained why I like ~use-package~ as my preferred installer. This setup could obviously work with some other macro, but discrepancies are probable.
