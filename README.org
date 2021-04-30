@@ -597,6 +597,45 @@ I fought against using folding for my code because I feel that need for it is ma
   (add-hook 'prog-mode-hook 'yafolding-mode)
   (global-set-key (kbd "C-c y") 'yafolding-discover))
 #+end_src
+** Clojure
+Main Clojure package.
+
+#+begin_src emacs-lisp
+(use-package cider)
+#+end_src
+
+Paredit is used for structural editing, especially important when working with lisps.
+#+begin_src emacs-lisp
+(use-package paredit
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+  (add-hook 'lisp-mode-hook 'paredit-mode)
+  (add-hook 'clojure-mode-hook 'paredit-mode)
+  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook 'paredit-mode))
+#+end_src
+
+Good fit with ~paredit~, forces indentation as you type.
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+  :after paredit
+  :config
+  (add-hook 'paredit-mode-hook 'aggressive-indent-mode)
+  (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode))
+#+end_src
+
+Colorful presentation of the parenthesis can be of use when there is so many of them.
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :after paredit
+  :config (add-hook 'paredit-mode-hook 'rainbow-delimiters-mode))
+#+end_src
+
+Showing short flash when sexp is evaluated, adding some clarity to in-place eval.
+#+begin_src emacs-lisp
+(use-package cider-eval-sexp-fu
+  :after paredit)
+#+end_src
 ** Ruby
 Ensure ~ruby-mode~ is major mode for all ruby-related files.
 
