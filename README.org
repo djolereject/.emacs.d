@@ -123,6 +123,13 @@ This kind of safety is not needed and I want Emacs to load variables when it's i
 #+begin_src emacs-lisp
 (setq enable-local-variables :all)
 #+end_src
+*** Global line numbering
+Since Emacs 25, there is a built in replacement for linum, we turn it on for programming modes.
+
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+#+end_src
+#+end_src
 ** Remove unwanted
 *** Decorations
 If you use Emacs without mouse there is not much need for toolbar, scrollbar or menu.
@@ -362,16 +369,13 @@ Picking theme is personal for everybody so if you don't like my choice explore s
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
     :if window-system
-    :config (load-theme 'base16-material t))
+    :config
+    (load-theme 'base16-material t)
+    (set-face-attribute 'line-number-current-line nil :foreground (plist-get base16-material-colors :base01))
+    (set-face-attribute 'line-number-current-line nil :background (plist-get base16-material-colors :base04)))
   ;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
-  ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale 
+  ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale
 #+END_SRC
-
-#+begin_src emacs-lisp :tangle no
-(use-package silkworm-theme
-  :config (load-theme 'silkworm t))
-;; basic gandalf silkworm cloud nova
-#+end_src
 * Org Mode
 Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
 
@@ -564,12 +568,6 @@ I like ~ediff~ more than ~smerge~, but that's probably just a personal preferenc
 #+END_SRC
 * Programming
 ** General settings
-*** Line numbers
-Show line numbers in any programming mode.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'linum-mode)
-#+END_SRC
 *** Camel Case
 Treat CamelCase as separate words while editing.
 
