@@ -129,6 +129,13 @@ Since Emacs 25, there is a built in replacement for linum, we turn it on for pro
 #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 #+end_src
+*** Dim unfocused window
+Slightly dim window that is not currently in focus.
+
+#+begin_src emacs-lisp
+(use-package dimmer
+  :custom (dimmer-fraction 0.2)
+  :config (dimmer-mode))
 #+end_src
 ** Remove unwanted
 *** Decorations
