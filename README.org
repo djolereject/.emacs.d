@@ -137,6 +137,13 @@ Slightly dim window that is not currently in focus.
   :custom (dimmer-fraction 0.2)
   :config (dimmer-mode))
 #+end_src
+*** Newline
+Newline at the end is needed in most cases.
+
+#+begin_src emacs-lisp
+(setq require-final-newline t)
+(setq mode-require-final-newline t)
+#+end_src
 ** Remove unwanted
 *** Decorations
 If you use Emacs without mouse there is not much need for toolbar, scrollbar or menu.
@@ -587,11 +594,6 @@ Treat CamelCase as separate words while editing.
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :config (global-company-mode t))
-#+END_SRC
-*** Newline
-#+BEGIN_SRC emacs-lisp
-(setq require-final-newline nil)
-(setq mode-require-final-newline nil)
 #+END_SRC
 *** Folding
 I fought against using folding for my code because I feel that need for it is major red flag, but programmer's life is a hard one and I found myself working with company that believes in ruby methods with hundreds of lines of code. This package folds methods so you can see bigger picture.
