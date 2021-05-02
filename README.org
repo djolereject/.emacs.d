@@ -168,10 +168,11 @@ Expect y/n instead of yes/no when needing confirmation - this really ought to be
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 *** Tooltips
-I never need GUI tooltips in Emacs and can't imagine type of usage that welcomes it.
+I never need GUI tooltips in Emacs and can't imagine type of usage that welcomes it. Same goes for the font selection panel.
 
 #+BEGIN_SRC emacs-lisp
 (setq tooltip-use-echo-area t)
+(unbind-key "s-t")
 #+END_SRC
 *** Sound Beep
 Beep is frequent, irritating and not at all helpful. Send it to message screen instead of speakers so you still have some kind of visible cue that it happened.
