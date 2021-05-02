@@ -353,6 +353,16 @@ I made lot of global keybindings for these packages because they are created to 
 	 ("C-M-y" . counsel-yank-pop)
    ))
 #+end_src
+
+*** Ivy Rich
+Not really essential, but [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds some details to all Ivy results, such as keybindings, descriptions of commands on ~counsel-M-x~ etc.
+
+#+begin_src emacs-lisp
+(use-package ivy-rich
+  :after (ivy counsel)
+  :init (setq ivy-rich-path-style 'abbrev)
+  :config (ivy-rich-mode))
+#+end_src
 *** Which key
 [[https://github.com/justbur/emacs-which-key][which-key]] opens popup after entering incomplete command. Delay of one second gives enough time to finish command without seeing it, and if I'm stuck it shows available endings to entered prefix.
 
