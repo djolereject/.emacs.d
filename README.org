@@ -363,7 +363,6 @@ Not really essential, but [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds
 #+begin_src emacs-lisp
 (use-package ivy-rich
   :after (ivy counsel)
-  :init (setq ivy-rich-path-style 'abbrev)
   :config (ivy-rich-mode))
 #+end_src
 *** Which key
@@ -377,6 +376,18 @@ Not really essential, but [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds
     ;;(which-key-setup-side-window-right-bottom)
   (which-key-mode))
 #+END_SRC
+*** Help
+For augmentation of describe functions. It adds lots of valuable information to standard ~Help~.
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-key] . helpful-key)
+  ([remap describe-command] . helpful-command))
+#+end_src
 ** Meta
 Emacs configuration is job that is never really finished so I added convenient shortcut to open ~README.org~ file from anywhere: ~C-c i~. When I'm inside ~README~, it tangles and reloads it again.
 
