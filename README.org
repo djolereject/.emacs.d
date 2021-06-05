@@ -127,7 +127,10 @@ This kind of safety is not needed and I want Emacs to load variables when it's i
 Since Emacs 25, there is a built in replacement for linum, we turn it on for programming modes.
 
 #+begin_src emacs-lisp
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(defun display-numbers-hook()
+  (display-line-numbers-mode 1))
+
+(add-hook 'prog-mode-hook 'display-numbers-hook)
 #+end_src
 *** Dim unfocused window
 Slightly dim window that is not currently in focus.
