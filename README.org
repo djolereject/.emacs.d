@@ -489,6 +489,20 @@ Org mode 9.2 changed structure template expansion, preferred way now is to open 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-structure-template-alist '("p" . "src emacs-lisp"))
 #+END_SRC
+*** Company Org Block
+This package ensures that writing ~<~ as first symbol in line opens up context menu with possible org blocks.
+
+#+begin_src emacs-lisp
+(use-package company-org-block
+  :ensure t
+  :custom
+  (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+  (company-begin-commands '(self-insert-command org-self-insert-command))
+  :hook ((org-mode . (lambda ()
+                       (setq-local company-backends '(company-org-block))
+                       (company-mode +1)))))
+#+end_src
+
 ** Appearance
 Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's a matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
 
