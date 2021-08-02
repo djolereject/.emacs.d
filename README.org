@@ -862,6 +862,12 @@ Installing modes for various markup languages.
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode)
 #+END_SRC
+
+*** ASCII Doc
+#+begin_src emacs-lisp
+(use-package adoc-mode)
+#+end_src
+
 ** Redis
 Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis server.
 
