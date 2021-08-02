@@ -27,3 +27,4 @@
 (require 'org)
 (org-babel-tangle-file original-source compiled-source)
 (load-file compiled-source)
+(put 'dired-find-alternate-file 'disabled nil)
