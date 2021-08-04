@@ -426,7 +426,7 @@ Picking theme is personal for everybody so if you don't like my choice explore s
 * Org Mode
 Customizing one of the biggest and most popular packages for Emacs could be infinite job on itself, but I try to go with defaults as much as I can. 
 
-!!! TODO: enhance this section with templates and captures.
+TODO: enhance this section with templates and captures.
 
 ** General Layout
 *** Indentation
@@ -552,13 +552,14 @@ I'm usually exporting to pdf, so [[https://github.com/kawabata/ox-pandoc][ox-pan
 (setq org-log-done t)
 #+END_SRC
 *** Files
-Define default place for my agenda
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-files (list "~/org/agenda.org"))
-#+END_SRC
-** ADDITIONAL
+Define default place for my agenda, all files with ~org~ extension inside this directory are taken into account.
 
-This is specialized functions for starting and stopping time when change to and from ACTIVE and PAUSED (DONE is automatical)
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files '("~/org/agenda"))
+#+END_SRC
+*** Timing active tasks
+Specialized functions for starting and stopping time when change to and from ACTIVE and PAUSED. Clock is automatically stopped on closing tags (DONE, CANCEL, etc.).
+
 #+begin_src emacs-lisp
 (eval-after-load 'org
   '(progn
