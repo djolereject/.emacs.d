@@ -587,6 +587,13 @@ Specialized functions for starting and stopping time when change to and from ACT
 	 (org-clock-out)))
      (add-hook 'org-after-todo-state-change-hook 'djole/org-clock-out-paused)))
 #+end_src
+*** Capture
+Whenever capture is taken, it can be straight refiled to the agenda files. When ~C-c c~ brings out capture template ~C-c w~ can prompt with all the headings from agenda files making it easy to add a new task to the list.
+
+#+begin_src emacs-lisp
+(setq org-refile-targets '((nil :maxlevel . 9)
+                           (org-agenda-files :maxlevel . 9)))
+#+end_src
 * Git
 Version control is important part of Emacs ever since [[https://github.com/magit/magit][Magit]] entered the scene showing factual difference between "porcelain" and "plumbing". After spending some time getting used to it, ~Magit~'s efficiency will look like magic to seasoned git user.
 
