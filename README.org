@@ -474,24 +474,8 @@ Present symbols as intended (pi -> \pi{}).
   :config (add-hook 'org-mode-hook 'org-bullets-mode))
 #+END_SRC
 ** Bindings
-While trying to be as close to defaults as possible, I still have some preferences when it comes to binding keys in ~org-mode~.
-*** Changing levels
-- Promoting/Demoting with Super-left/right
-- Moving subtree with Super-up/down
-- This leaves M-right/left to behave same as in other modes
+While trying to be as close to defaults as possible, I still have some preferences when it comes to customizing ~org-mode~.
 
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  :bind  (:map org-mode-map
-	       ("M-<right>" . forward-word)
-	       ("M-<left>" . backward-word)
-	       ("s-<up>" . org-move-subtree-up)
-	       ("s-<down>" . org-move-subtree-down)
-	       ("s-<right>" . org-do-demote)
-	       ("s-<left>" . org-do-promote)
-	       ("C-q q" . org-todo)
-	       ([C-tab] . nil))) ;; used for windmove-right
-#+END_SRC
 *** Template for elisp code
 Org mode 9.2 changed structure template expansion, preferred way now is to open popup with ~C-c C-,~ where you can pick template with one letter. I mostly use source with emacs-lisp, so I added it to he list under letter *p*.
 
