@@ -308,7 +308,8 @@ For now, I only customized things related to OSX because that's the system I'm s
   (global-set-key (kbd "s-q") nil)
   (global-set-key (kbd "s-w") nil)
   (global-set-key (kbd "C-~") nil)
-  (setq mac-right-command-modifier 'control))
+  (setq mac-left-command-modifier 'super)
+  (setq mac-right-command-modifier 'hyper))
 #+END_SRC
 ** Minibuffer
 There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time chasing it's quirks around some other big packages.
