@@ -557,36 +557,6 @@ Define default place for my agenda, all files with ~org~ extension inside this d
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files '("~/org/agenda"))
 #+END_SRC
-*** Timing active tasks
-Specialized functions for starting and stopping time when change to and from ACTIVE and PAUSED. Clock is automatically stopped on closing tags (DONE, CANCEL, etc.).
-
-#+begin_src emacs-lisp
-(eval-after-load 'org
-  '(progn
-     (setq org-todo-keywords '((sequence "TODO" "ACTIVE(a)" "PAUSED(p)" "|" "DONE(d)" "CANCELED(x)")))
-
-     (defun djole/org-clock-in-active ()
-       "Clock in when the task is marked ACTIVE."
-       (when (and (string= org-state "ACTIVE")
-		  (not (string= org-last-state org-state)))
-	 (org-clock-in)))
-     (add-hook 'org-after-todo-state-change-hook 'djole/org-clock-in-active)
-     ;;
-     (defadvice org-clock-in (after djole activate)
-       "Set this task's status to 'ACTIVE."
-       (org-todo "ACTIVE"))
-     ;;
-     (defun djole/org-clock-out-paused ()
-       "Clock out when the task is marked PAUSED."
-       (when (and (string= org-state "PAUSED")
-                  (equal (marker-buffer org-clock-marker) (current-buffer))
-                  (< (point) org-clock-marker)
-	          (> (save-excursion (outline-next-heading) (point))
-		     org-clock-marker)
-		  (not (string= org-last-state org-state)))
-	 (org-clock-out)))
-     (add-hook 'org-after-todo-state-change-hook 'djole/org-clock-out-paused)))
-#+end_src
 *** Capture
 Whenever capture is taken, it can be straight refiled to the agenda files. When ~C-c c~ brings out capture template ~C-c w~ can prompt with all the headings from agenda files making it easy to add a new task to the list.
 
