@@ -147,6 +147,19 @@ Newline at the end is needed in most cases.
 (setq require-final-newline t)
 (setq mode-require-final-newline t)
 #+end_src
+*** Remove mouse
+I often click on the touchpad by accident and I don't really need a mouse anyway so I decided to turn it off completely. Steve Purcell packed that functionality into a package so I didn't need to implement it here.
+
+#+begin_src emacs-lisp
+(use-package disable-mouse
+  :config (global-disable-mouse-mode))
+#+end_src
+*** Split
+#+begin_src emacs-lisp
+(setq split-height-threshold nil)
+(setq split-width-threshold 200)
+#+end_src
+
 ** Remove unwanted
 *** Decorations
 If you use Emacs without mouse there is not much need for toolbar, scrollbar or menu.
