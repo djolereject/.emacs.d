@@ -742,10 +742,14 @@ Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur
 
 #+BEGIN_SRC emacs-lisp
 (use-package inf-ruby
-  :init (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
-  :bind 
+  :init
+  (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
+  (setq inf-ruby-default-implementation "pry")
+  :bind
   ("C-c q" . 'ruby-send-buffer)
-  ("C-c C-q" . 'ruby-send-buffer-and-go))
+  ("C-c C-q" . 'ruby-send-buffer-and-go)
+  ("C-c r" . 'ruby-send-line)
+  ("C-c C-r" . 'ruby-send-line-and-go))
 #+END_SRC
 
 Use [[https://github.com/dgutov/robe][Robe]] with ~ruby-mode~, attach it to ~inf-ruby~ subprocess to show info about loaded methods. After configuring robe and company, add company-robe to the list of its backends.
@@ -779,7 +783,6 @@ Various variables are moved in ~:config~ part of the setup for clarity.
   (define-key rspec-mode-map (kbd "C-c C-c") 'rspec-verify-single)
   (define-key rspec-mode-map (kbd "C-q f") 'rspec-run-last-failed)
   (define-key rspec-mode-map (kbd "C-q r") 'rspec-rerun)
-  (setq rspec-use-rake-when-possible nil) ; when rake is available use it.
   (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter); make RSpec get into editing mode on pry.
   (setq compilation-scroll-output 'first-error) ; scroll to the first test failure
   (setq compilation-ask-about-save nil) ; don't ask for confirmation of save when compiling
@@ -803,6 +806,8 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
   (define-key projectile-rails-mode-map (kbd "C-s-v") 'projectile-rails-find-view)
   (define-key projectile-rails-mode-map (kbd "C-s-c") 'projectile-rails-find-controller)
   (define-key projectile-rails-mode-map (kbd "C-s-h") 'projectile-rails-find-helper)
+  (define-key projectile-rails-mode-map (kbd "C-s-f") 'projectile-rails-find-fixture)
+  (define-key projectile-rails-mode-map (kbd "C-s-a") 'projectile-rails-find-locale)
   (define-key projectile-rails-mode-map (kbd "C-s-r") 'projectile-rails-find-component)
   (define-key projectile-rails-mode-map (kbd "C-s-s") 'projectile-rails-find-spec)
   (define-key projectile-rails-mode-map (kbd "C-s-l") 'projectile-rails-find-lib)
@@ -810,6 +815,7 @@ Part of [[https://github.com/bbatsov/projectile][projectile]], [[https://github.
   (define-key projectile-rails-mode-map (kbd "C-s-i") 'projectile-rails-find-initializer)
   (define-key projectile-rails-mode-map (kbd "C-s-j") 'projectile-rails-find-job)
   (define-key projectile-rails-mode-map (kbd "C-s-n") 'projectile-rails-find-migration)
+  (define-key projectile-rails-mode-map (kbd "C-s-g")  projectile-rails-mode-goto-map)
   (define-key projectile-rails-mode-map (kbd "C-s-<return>") 'projectile-rails-goto-file-at-point))
 #+END_SRC
 ** Web
@@ -839,7 +845,7 @@ I tried ~js2~ mode, but upgraded it with [[https://github.com/felipeochoa/rjsx-m
   :mode ("\\.jsx\\'" ".js\\'")
   :config
   (setq js-indent-level 2)
-  (setq js2-strict-missing-semi-warning t)
+  (setq js2-strict-missing-semi-warning nil)
   (define-key rjsx-mode-map "<" nil)
   (define-key rjsx-mode-map (kbd "C-d") nil)
   (define-key rjsx-mode-map ">" nil))
