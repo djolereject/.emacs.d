@@ -34,12 +34,14 @@ Before installing anything, it's essential to setup TLS certificate because Emac
 (add-to-list 'gnutls-trustfiles "/usr/local/etc/openssl@1.1/cert.pem")
 #+END_SRC
 ** Sources
-Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. I used to go with ~melpa-stable~, but since that time I learned that there is no advantage presumed with "stable" postfix in the name. I can always download packages and set local source for ~use-package~, making it even more secure if that becomes important.
+Having only one source repository keeps things simple and I don't need fancy, rare or bleeding edge packages. I used to go with ~melpa-stable~, but since that time I learned that there is no advantage presumed with "stable" postfix in the name. I can always download packages and set local source for ~use-package~, making it even more secure if that becomes important. I added ~jcs-elpa~ for some packages that are newer.
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+(add-to-list 'package-archives '( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/") t)
+(when (< emacs-major-version 27)
+  (package-initialize))
 #+END_SRC
 ** use-package
 I already explained why I like ~use-package~ as my preferred installer. This setup could obviously work with some other macro, but discrepancies are probable.
@@ -325,7 +327,7 @@ For now, I only customized things related to OSX because that's the system I'm s
   (setq mac-right-command-modifier 'hyper))
 #+END_SRC
 ** Minibuffer
-There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time chasing it's quirks around some other big packages.
+There are lot of packages that are trying to influence all aspects of working with Emacs and consequentially change behavior of minibuffer. I tried working with ~Helm~, but in the end decided I don't need such an invasive package because I started spending time chasing its quirks around some other big packages.
 
 Another possible route is having just ~ido-mode~ and big number of specialized settings for different scenarios which also tends to become clutter after a while. 
 
