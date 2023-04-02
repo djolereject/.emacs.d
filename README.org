@@ -452,8 +452,6 @@ Picking theme is personal for everybody so if you don't like my choice explore s
 * Org Mode
 Customizing one of the biggest and most popular packages for Emacs could be an infinite job in itself, but I try to go with defaults as much as I can.
 
-TODO: enhance this section with templates and captures.
-
 ** General Layout
 *** Indentation
 Indent everything to the level of its title, but skip further indentation of code.
@@ -521,6 +519,7 @@ This package ensures that writing ~<~ as first symbol in line opens up context m
                        (company-mode +1)))))
 #+end_src
 *** Heading visibility
+I found myself needing to close everything to some level in some org files and it turned out 5 levels is in the sweet spot. This one is a little helper for that.
 
 #+begin_src emacs-lisp
 (defun org-show-five-levels()
@@ -531,8 +530,6 @@ This package ensures that writing ~<~ as first symbol in line opens up context m
   (lambda ()
     (define-key org-mode-map (kbd "C-c 5") 'org-show-five-levels)))
 #+end_src
-
-
 ** Appearance
 Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's a matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
 
@@ -579,7 +576,7 @@ Define default place for my agenda, all files with ~org~ extension inside this d
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files '("~/org/agenda"))
 (setq org-default-notes-file "~/org/agenda/notes.org")
-(setq org-sport-file "~/org/sport.org")
+(setq org-training-file "~/org/training.org")
 #+END_SRC
 *** Capture
 Whenever capture is taken, it can be straight refiled to the agenda files. When ~C-c c~ brings out capture template ~C-c w~ can prompt with all the headings from agenda files making it easy to add a new task to the list.
@@ -611,7 +608,7 @@ I use ~org-journal~ to keep my daily diary.
 	 ))
 #+end_src
 *** Capture Templates
-Save todos in the default notes file showing list of headings as possible targets. Sport file is organized in weekly format.
+Save todos in the default notes file showing list of headings as possible targets. Training file is organized in weekly format.
 
 #+begin_src emacs-lisp
 (defun refile-heading ()
@@ -621,11 +618,11 @@ Save todos in the default notes file showing list of headings as possible target
 (setq org-capture-templates
       '(("t" "Todo" entry (file+function org-default-notes-file refile-heading)
 	 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp nil)")
-	("s" "Sport")
-	("sw" "Weight" plain (file+datetree+prompt org-sport-file "Timeline") "%^{WEIGHT}p" :tree-type week)
-	("sr" "Running" entry (file+datetree+prompt org-sport-file "Timeline")
+	("t" "Training")
+	("tw" "Weight" plain (file+datetree+prompt org-training-file "Timeline") "%^{WEIGHT}p" :tree-type week)
+	("tr" "Running" entry (file+datetree+prompt org-training-file "Timeline")
 	 "* Running\n- distance: %^{Distance} km\n- time: %^{Time} min\n- notes: %^{Notes}" :tree-type week)
-	("sg" "Gym" entry (file+datetree+prompt org-sport-file "Timeline")
+	("tg" "Gym" entry (file+datetree+prompt org-training-file "Timeline")
 	 "* Gym\n%?" :tree-type week)))
 #+end_src
 * Git
