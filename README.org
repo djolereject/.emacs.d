@@ -901,6 +901,19 @@ Installing modes for various markup languages.
 (use-package adoc-mode)
 #+end_src
 
+** Drawing UML
+UML diagrams can be drawn with [[https://plantuml.com/emacs][Plant UML]], using [[https://github.com/skuro/plantuml-mode][plantuml-mode]]. Library has to be installed on the system, and its path is loaded with ~(shell-command-to-string "which plantuml")~.
+File ~plantuml.jar~ needs to be copied in the user's home dir, which is easily done with ~M-x plantuml-download-jar<RET>~. If this path is to be changed for some reason, both ~org-plantuml-jar-path~ and ~plantuml-jar-path~ variables have to be set here.
+
+#+begin_src emacs-lisp
+(use-package plantuml-mode
+  :init
+  (setq plantuml-default-exec-mode 'executable)
+  (setq plantuml-executable-path (replace-regexp-in-string "\n$" "" (shell-command-to-string "which plantuml")))
+  (setq org-plantuml-jar-path "~/plantuml.jar")
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src
 ** Redis
 Use [[https://github.com/justinhj/eredis][eredis]] for connecting to Redis server.
 
@@ -915,7 +928,7 @@ Try [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]].
   :config (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
 #+end_src
 
-Use this for docker-compose
+Try this for docker-compose. TODO: Check if really needed.
 #+begin_src emacs-lisp
 (use-package docker-compose-mode)
 #+end_src
@@ -1004,19 +1017,6 @@ Nice little [[https://github.com/abo-abo/define-word][tool]] that pull definitio
   :bind
   ("M-#" . define-word-at-point)
   ("C-M-#" . define-word))
-#+end_src
-*** Drawing UML
-UML diagrams can be drawn with [[https://plantuml.com/emacs][Plant UML]], using [[https://github.com/skuro/plantuml-mode][plantuml-mode]]. Library has to be installed on the system, and its path is loaded with ~(shell-command-to-string "which plantuml")~.
-File ~plantuml.jar~ needs to be copied in the user's home dir, which is easily done with ~M-x plantuml-download-jar<RET>~. If this path is to be changed for some reason, both ~org-plantuml-jar-path~ and ~plantuml-jar-path~ variables have to be set here.
-
-#+begin_src emacs-lisp
-(use-package plantuml-mode
-  :init
-  (setq plantuml-default-exec-mode 'executable)
-  (setq plantuml-executable-path (replace-regexp-in-string "\n$" "" (shell-command-to-string "which plantuml")))
-  (setq org-plantuml-jar-path "~/plantuml.jar")
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
 #+end_src
 * Reading
 ** RSS
