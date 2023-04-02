@@ -655,13 +655,6 @@ TODO: Make sure it is used and remove if not!
 (use-package forge
   :after magit)
 #+END_SRC
-** Ediff
-I like ~ediff~ more than ~smerge~, but that's probably just a personal preference. Give it a try.
-
-#+BEGIN_SRC emacs-lisp
-(use-package ediff
-  :config (setq ediff-split-window-function 'split-window-horizontally))
-#+END_SRC
 * Programming
 ** General settings
 *** Camel Case
@@ -735,16 +728,6 @@ Showing short flash when sexp is evaluated, adding some clarity to in-place eval
   :after paredit)
 #+end_src
 ** Ruby
-Ensure ~ruby-mode~ is major mode for all ruby-related files.
-
-#+BEGIN_SRC emacs-lisp
-(use-package ruby-mode
-  :mode
-  "\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
-  "\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'"
-  :config (setq ruby-insert-encoding-magic-comment nil)) ;; don't add coding comment on save
-#+END_SRC
-
 *** REPL
 Common library for opening REPL inside Emacs is [[https://github.com/nonsequitur/inf-ruby/][inf-ruby]], make it available for all ruby files.
 
