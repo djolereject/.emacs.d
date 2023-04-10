@@ -40,8 +40,6 @@ Having only one source repository keeps things simple and I don't need fancy, ra
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/") t)
-(when (< emacs-major-version 27)
-  (package-initialize))
 #+END_SRC
 ** use-package
 I already explained why I like ~use-package~ as my preferred installer. This setup could obviously work with some other macro, but discrepancies are probable.
@@ -168,7 +166,6 @@ If you use Emacs without mouse there is not much need for toolbar, scrollbar or 
 
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode 0)
-(scroll-bar-mode 0)
 (menu-bar-mode -1)
 #+END_SRC
 *** Messages
@@ -437,17 +434,20 @@ Storing credentials can become complicated, look [[https://www.masteringemacs.or
 #+end_src
 
 * Theme
-Picking theme is personal for everybody so if you don't like my choice explore some resources out there and pick one that suits you. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://belak.github.io/base16-emacs/][but they do have some variety.]]
+Picking theme is personal for everybody so if you don't like my choice explore some resources out there and pick one that suits you. There are lot of repositories out there so you shouldn't limit yourself to ~base16~, [[https://tinted-theming.github.io/base16-emacs/][but they do have some variety.]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package base16-theme
-    :if window-system
-    :config
-    (load-theme 'base16-material t)
-    (set-face-attribute 'line-number-current-line nil :foreground (plist-get base16-material-colors :base01))
-    (set-face-attribute 'line-number-current-line nil :background (plist-get base16-material-colors :base04)))
-  ;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
-  ;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale
+(use-package base16-theme
+  :if window-system
+  :config
+  (load-theme 'base16-solarized-dark t)
+  ; Remove background of code blocks in org files (TODO: Might be better way of doing this)
+  (custom-set-faces
+   '(org-block ((t (:background nil))))
+   '(org-block-begin-line ((t (:background nil))))
+   '(org-block-end-line ((t (:background nil))))))
+;; light candidates: 'base16-mexico-light 'base16-atelier-cave-light
+;; dark candidates: 'base16-oceanicnext 'base16-materia 'base16-apathy 'base16-atelier-savanna 'base16-chalk 'base16-google-dark 'base16-gruvbox-dark-pale
 #+END_SRC
 * Org Mode
 Customizing one of the biggest and most popular packages for Emacs could be an infinite job in itself, but I try to go with defaults as much as I can.
@@ -1063,14 +1063,6 @@ Spare minutes are best spent on practicing some touch typing and I added some pa
 
 #+BEGIN_SRC emacs-lisp
 (use-package typit)
-#+END_SRC
-** Search 
-It's possible to search Stack Overflow from Emacs with one simple command. Results are stored in org buffer which makes it super-convenient.
-
-TODO: See if I ever use this and remove if not.
-
-#+BEGIN_SRC emacs-lisp
-(use-package sos)
 #+END_SRC
 * AI
 In this stage, there are many libraries for Emacs that are using ChatGPT. Here is more info: [[https://news.ycombinator.com/item?id=35256734][Hacker News]], and [[https://github.com/emacs-openai/][this]] list also. I intend to change this section and try every package I run into.
