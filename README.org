@@ -628,12 +628,14 @@ Save todos in the default notes file showing list of headings as possible target
   (org-refile '(4)))
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+function org-default-notes-file refile-heading)
+      '(("d" "Todo" entry (file+function org-default-notes-file refile-heading)
 	 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp nil)")
 	("t" "Training")
 	("tw" "Weight" plain (file+datetree+prompt org-training-file "Timeline") "%^{WEIGHT}p" :tree-type week)
 	("tr" "Running" entry (file+datetree+prompt org-training-file "Timeline")
 	 "* Running\n- distance: %^{Distance} km\n- time: %^{Time} min\n- notes: %^{Notes}" :tree-type week)
+	("to" "Outdoor Archery" entry (file+datetree+prompt org-training-file "Timeline")
+	 "* Outdoor practice %(concat \":archery:\" (read-string \"Poundage: \") \"lb:\")\n- arrows: %^{Arrows}\n- distance: %^{Distance} m\n- notes: %^{Notes}" :tree-type week)
 	("tg" "Gym" entry (file+datetree+prompt org-training-file "Timeline")
 	 "* Gym\n%?" :tree-type week)))
 #+end_src
