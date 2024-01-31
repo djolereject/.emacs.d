@@ -902,7 +902,7 @@ Installing modes for various markup languages.
 *** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode 
-  :init (setq-default markdown-hide-markup t))
+  :init (setq-default markdown-hide-markup nil))
 #+END_SRC
 
 *** JSON
