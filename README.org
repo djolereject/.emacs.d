@@ -530,6 +530,18 @@ I found myself needing to close everything to some level in some org files and i
   (lambda ()
     (define-key org-mode-map (kbd "C-c 5") 'org-show-five-levels)))
 #+end_src
+*** Checkmark shortcut
+I often want to add checkmark to some places so I created a keybinding
+
+#+begin_src emacs-lisp :lexical no
+(defun insert-large-checkmark ()
+  (interactive)
+  (insert (propertize "✓" 'face '(:height 3.5))))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c x") 'insert-large-checkmark))
+
+#+end_src
 ** Appearance
 Just one way for ~org-mode~ to look nice. I copied most of it from somewhere and added couple of things, but it's a matter of personal preference so feel free to play with it. One more important note is that layout settings are tightly related to theme you are using, so this section is something you will probably often fine tune.
 
