@@ -1106,7 +1106,37 @@ Library specialized for code analysis.
     (setq codegpt-model "gpt-3.5-turbo")
     (setq openai-key (auth-source-pick-first-password :host '("openai.com"))))
 #+end_src
+** Codium
+#+begin_src emacs-lisp :lexical no
+;; we recommend using use-package to organize your init.el
+(use-package codeium
+  :init
+  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
+  :config
+  (setq use-dialog-box nil) ;; do not use popup boxes
+  ;; get codeium status in the modeline
+  (setq codeium-mode-line-enable
+        (lambda (api) (not (memq api '(CancelRequest Heartbeat AcceptCompletion)))))
+  (add-to-list 'mode-line-format '(:eval (car-safe codeium-mode-line)) t)
+  ;; alternatively for a more extensive mode-line
+  ;; (add-to-list 'mode-line-format '(-50 "" codeium-mode-line) t)
 
+  ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
+  (setq codeium-api-enabled
+        (lambda (api)
+          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+  ;; You can overwrite all the codeium configs!
+  ;; for example, we recommend limiting the string sent to codeium for better performance
+  (defun my-codeium/document/text ()
+    (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
+  ;; if you change the text, you should also change the cursor_offset
+  ;; warning: this is measured by UTF-8 encoded bytes
+  (defun my-codeium/document/cursor_offset ()
+    (codeium-utf8-byte-length
+     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
+  (setq codeium/document/text 'my-codeium/document/text)
+  (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+#+end_src
 ** Copilot
 Installing Github Copilot just to see how it works.
 
@@ -1143,7 +1173,8 @@ Some settings for copilot, let's see how it goes.
                               dired-mode-hook
                               compilation-mode-hook
                               flutter-mode-hook
-                              minibuffer-mode-hook)
+                              minibuffer-mode-hook
+			          *rspec-compilation*)
   "Modes in which copilot is inconvenient.")
 
 (defun rk/copilot-disable-predicate ()
@@ -1188,11 +1219,12 @@ is available. Useful if you tend to hammer your keys like I do."
         (next-line))
     (copilot-complete)))
 
-(define-key copilot-mode-map (kbd "M-C-<up>") #'copilot-next-completion)
-(define-key copilot-mode-map (kbd "M-C-<down>") #'copilot-previous-completion)
-(define-key copilot-mode-map (kbd "M-C-<right>") #'copilot-accept-completion-by-word)
-(define-key copilot-mode-map (kbd "M-C-<left>") #'copilot-accept-completion-by-line)
-(define-key global-map (kbd "M-C-<return>") #'rk/copilot-complete-or-accept)
+(define-key copilot-mode-map (kbd "s-<up>") #'copilot-next-completion)
+(define-key copilot-mode-map (kbd "s-<down>") #'copilot-previous-completion)
+(define-key copilot-mode-map (kbd "s-[") #'copilot-accept-completion-by-word)
+(define-key copilot-mode-map (kbd "s-]") #'copilot-accept-completion-by-line)
+(define-key global-map (kbd "s-<return>") #'rk/copilot-complete-or-accept)
+
 
 (defun rk/copilot-quit ()
   "Run `copilot-clear-overlay' or `keyboard-quit'. If copilot is
